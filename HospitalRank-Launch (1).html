@@ -1,0 +1,2180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HospitalRank — Reviews for Travel Healthcare Professionals</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════
+   RESET & VARIABLES
+═══════════════════════════════════════ */
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#f4f6f8;
+  --surface:#ffffff;
+  --surface2:#f8fafc;
+  --border:#e2e8f0;
+  --border2:#cbd5e1;
+  --teal:#14b8a6;
+  --teal-dark:#0f9689;
+  --teal-light:#e0faf7;
+  --teal-mid:rgba(20,184,166,.12);
+  --slate:#0f172a;
+  --slate2:#1e293b;
+  --muted:#64748b;
+  --muted2:#94a3b8;
+  --muted3:#cbd5e1;
+  --text:#0f172a;
+  --text2:#334155;
+  --text3:#64748b;
+  --gold:#f59e0b;
+  --gold-bg:#fffbeb;
+  --green:#10b981;
+  --green-bg:#ecfdf5;
+  --red:#ef4444;
+  --red-bg:#fef2f2;
+  --amber:#f59e0b;
+  --amber-bg:#fffbeb;
+  --shadow:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.04);
+  --shadow-md:0 4px 12px rgba(0,0,0,.08),0 2px 4px rgba(0,0,0,.04);
+  --shadow-lg:0 20px 40px rgba(0,0,0,.1),0 8px 16px rgba(0,0,0,.06);
+  --radius:12px;
+  --sans:'DM Sans',sans-serif;
+  --serif:'DM Serif Display',serif;
+}
+html{scroll-behavior:smooth;}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:100vh;font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;}
+a{color:var(--teal);text-decoration:none;}
+a:hover{text-decoration:underline;}
+button,select,input,textarea{font-family:var(--sans);}
+::-webkit-scrollbar{width:7px;height:7px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--muted3);border-radius:4px;}
+::selection{background:rgba(20,184,166,.2);}
+
+/* ═══════════════════════════════════════
+   NAV
+═══════════════════════════════════════ */
+#nav{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  height:60px;
+  background:rgba(255,255,255,.96);
+  backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:16px;
+  padding:0 24px;
+  box-shadow:0 1px 0 rgba(0,0,0,.04);
+}
+.nav-logo{display:flex;align-items:center;gap:10px;cursor:pointer;flex-shrink:0;text-decoration:none;}
+.nav-logo:hover{text-decoration:none;}
+.nav-logo-icon{
+  width:36px;height:36px;
+  background:linear-gradient(135deg,var(--teal),#0891b2);
+  border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;box-shadow:0 2px 8px rgba(20,184,166,.3);
+  flex-shrink:0;
+}
+.nav-logo-text{font-weight:700;font-size:17px;color:var(--slate);letter-spacing:-.4px;}
+.nav-logo-text em{font-style:normal;color:var(--teal);}
+
+.nav-search-wrap{flex:1;max-width:460px;position:relative;}
+#navInput{
+  width:100%;
+  background:var(--bg);
+  border:1.5px solid var(--border);
+  border-radius:100px;
+  padding:8px 18px 8px 40px;
+  font-size:14px;color:var(--text);
+  outline:none;transition:all .2s;
+}
+#navInput:focus{border-color:var(--teal);background:#fff;box-shadow:0 0 0 3px rgba(20,184,166,.1);}
+#navInput::placeholder{color:var(--muted2);}
+.nav-search-icon{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--muted2);font-size:15px;pointer-events:none;}
+
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.nav-user{
+  display:flex;align-items:center;gap:8px;
+  background:var(--bg);border:1.5px solid var(--border);
+  border-radius:100px;padding:6px 14px 6px 8px;
+  font-size:13px;font-weight:600;color:var(--text2);
+  cursor:pointer;transition:all .2s;
+}
+.nav-user:hover{border-color:var(--teal);color:var(--teal);}
+.nav-avatar{
+  width:26px;height:26px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:800;color:#fff;flex-shrink:0;
+}
+.nav-user .online-dot{width:7px;height:7px;border-radius:50%;background:var(--green);margin-left:2px;}
+.btn-nav-review{
+  background:var(--teal);color:#fff;border:none;
+  border-radius:100px;padding:8px 20px;
+  font-size:13px;font-weight:700;cursor:pointer;
+  transition:all .2s;white-space:nowrap;
+  box-shadow:0 2px 8px rgba(20,184,166,.3);
+}
+.btn-nav-review:hover{background:var(--teal-dark);transform:translateY(-1px);box-shadow:0 4px 12px rgba(20,184,166,.4);}
+
+/* Autocomplete dropdown */
+.autocomplete-drop{
+  display:none;position:absolute;top:calc(100% + 8px);left:0;right:0;
+  background:#fff;border:1.5px solid var(--border);
+  border-radius:var(--radius);overflow:hidden;
+  box-shadow:var(--shadow-lg);z-index:400;
+}
+.autocomplete-drop.open{display:block;}
+.ac-item{
+  padding:10px 14px;cursor:pointer;
+  display:flex;align-items:center;gap:11px;
+  transition:background .1s;
+  border-bottom:1px solid var(--border);
+}
+.ac-item:last-child{border-bottom:none;}
+.ac-item:hover{background:var(--bg);}
+.ac-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
+.ac-icon.city{background:var(--teal-light);}
+.ac-icon.hospital{background:#eff6ff;}
+.ac-icon.urgent{background:#fef3c7;}
+.ac-icon.er{background:#fef2f2;}
+.ac-name{font-weight:600;font-size:14px;color:var(--text);}
+.ac-sub{font-size:12px;color:var(--muted);margin-top:1px;}
+.ac-badge{margin-left:auto;font-size:11px;background:var(--bg);border:1px solid var(--border);border-radius:100px;padding:2px 9px;color:var(--muted);white-space:nowrap;}
+
+/* ═══════════════════════════════════════
+   LAYOUT
+═══════════════════════════════════════ */
+#app{padding-top:60px;}
+.page{display:none;}
+.page.active{display:block;}
+.wrap{max-width:1160px;margin:0 auto;padding:0 20px;}
+.cols{display:flex;gap:24px;align-items:flex-start;}
+.main{flex:1;min-width:0;}
+.side{width:308px;flex-shrink:0;}
+
+/* ═══════════════════════════════════════
+   HERO
+═══════════════════════════════════════ */
+.hero{
+  background:linear-gradient(160deg,#0f172a 0%,#134e4a 55%,#0f2027 100%);
+  padding:80px 24px 72px;
+  text-align:center;position:relative;overflow:hidden;
+}
+.hero::before{
+  content:'';position:absolute;inset:0;
+  background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2314b8a6' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+.hero-glow{
+  position:absolute;top:-100px;left:50%;transform:translateX(-50%);
+  width:800px;height:600px;
+  background:radial-gradient(ellipse,rgba(20,184,166,.15) 0%,transparent 65%);
+  pointer-events:none;
+}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(20,184,166,.15);
+  border:1px solid rgba(20,184,166,.3);
+  border-radius:100px;padding:5px 16px;
+  font-size:12px;font-weight:700;color:#5eead4;
+  letter-spacing:.06em;text-transform:uppercase;
+  margin-bottom:24px;
+  animation:fadeUp .5s ease both;
+}
+.hero-badge-dot{width:6px;height:6px;border-radius:50%;background:#5eead4;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+.hero h1{
+  font-family:var(--serif);
+  font-size:clamp(2.2rem,5vw,3.8rem);
+  color:#fff;line-height:1.1;
+  letter-spacing:-.02em;
+  margin-bottom:16px;
+  animation:fadeUp .5s .08s ease both;
+}
+.hero h1 em{font-style:italic;color:#5eead4;}
+.hero-sub{
+  color:#94a3b8;font-size:16px;
+  max-width:500px;margin:0 auto 32px;
+  line-height:1.7;
+  animation:fadeUp .5s .15s ease both;
+}
+.hero-search-wrap{
+  max-width:620px;margin:0 auto 20px;
+  position:relative;
+  animation:fadeUp .5s .22s ease both;
+}
+.hero-search-box{
+  display:flex;background:#fff;
+  border:2px solid transparent;
+  border-radius:16px;overflow:hidden;
+  box-shadow:0 8px 32px rgba(0,0,0,.25);
+  transition:box-shadow .2s;
+}
+.hero-search-box:focus-within{box-shadow:0 8px 32px rgba(0,0,0,.25),0 0 0 3px rgba(20,184,166,.3);}
+.hero-search-icon{display:flex;align-items:center;padding:0 16px;color:var(--muted2);font-size:18px;flex-shrink:0;}
+#heroInput{
+  flex:1;background:transparent;border:none;outline:none;
+  padding:16px 0;color:var(--text);font-size:15px;
+}
+#heroInput::placeholder{color:var(--muted2);}
+.hero-search-btn{
+  background:var(--teal);color:#fff;border:none;
+  padding:0 28px;font-weight:700;font-size:14px;cursor:pointer;
+  transition:background .2s;flex-shrink:0;
+}
+.hero-search-btn:hover{background:var(--teal-dark);}
+#heroAutocomplete{position:absolute;top:calc(100% + 8px);left:0;right:0;z-index:300;}
+
+.hero-chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;animation:fadeUp .5s .3s ease both;}
+.hero-chip{
+  display:flex;align-items:center;gap:5px;
+  background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);
+  border-radius:100px;padding:6px 14px;
+  font-size:12px;color:#94a3b8;cursor:pointer;
+  transition:all .2s;
+}
+.hero-chip:hover{background:rgba(20,184,166,.15);border-color:rgba(20,184,166,.3);color:#5eead4;}
+
+.hero-stats{
+  display:flex;gap:0;justify-content:center;
+  margin-top:48px;
+  animation:fadeUp .5s .38s ease both;
+}
+.h-stat{
+  text-align:center;padding:0 32px;
+  border-right:1px solid rgba(255,255,255,.1);
+}
+.h-stat:last-child{border-right:none;}
+.h-stat-n{font-size:26px;font-weight:800;color:#fff;display:block;line-height:1;}
+.h-stat-l{font-size:11px;color:#64748b;font-weight:500;letter-spacing:.06em;text-transform:uppercase;margin-top:5px;display:block;}
+
+/* ═══════════════════════════════════════
+   CARDS
+═══════════════════════════════════════ */
+.card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+}
+
+/* ── Post card (facility in list or review in feed) ── */
+.post-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);margin-bottom:10px;
+  display:flex;cursor:pointer;
+  transition:box-shadow .2s,border-color .2s;
+  overflow:hidden;position:relative;
+}
+.post-card:hover{box-shadow:var(--shadow-md);border-color:var(--border2);}
+.post-card::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;
+  width:3px;border-radius:3px 0 0 3px;
+  opacity:0;transition:opacity .2s;
+}
+.post-card:hover::before{opacity:1;}
+.post-card.good::before{background:var(--green);}
+.post-card.ok::before{background:var(--amber);}
+.post-card.bad::before{background:var(--red);}
+
+.vote-col{
+  width:46px;flex-shrink:0;
+  display:flex;flex-direction:column;align-items:center;
+  padding:12px 4px;gap:3px;
+  background:var(--surface2);
+  border-right:1px solid var(--border);
+}
+.vote-btn{
+  background:none;border:none;
+  color:var(--muted2);font-size:16px;
+  width:26px;height:26px;border-radius:4px;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:all .1s;
+}
+.vote-btn:hover{background:var(--border);}
+.vote-btn.up:hover{color:#ef4444;}
+.vote-btn.down:hover{color:#6366f1;}
+.vote-btn.up.voted{color:#ef4444;}
+.vote-btn.down.voted{color:#6366f1;}
+.vote-n{font-size:12px;font-weight:800;color:var(--muted);}
+.vote-n.hot{color:#ef4444;}
+
+.post-body{flex:1;padding:14px 16px;min-width:0;}
+.post-top{display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap;}
+.flair{
+  font-size:11px;font-weight:700;padding:2px 10px;border-radius:100px;
+  display:inline-flex;align-items:center;gap:4px;
+}
+.flair.teal{background:var(--teal-light);color:var(--teal-dark);}
+.flair.green{background:var(--green-bg);color:#047857;}
+.flair.amber{background:var(--amber-bg);color:#b45309;}
+.flair.red{background:var(--red-bg);color:#b91c1c;}
+.post-meta{font-size:12px;color:var(--muted);}
+.post-meta .u{color:var(--teal);font-weight:600;}
+.post-title{font-size:16px;font-weight:700;color:var(--text);margin-bottom:6px;line-height:1.3;letter-spacing:-.01em;}
+.post-loc{font-size:12px;color:var(--muted);margin-bottom:8px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.post-loc .sep{color:var(--muted3);}
+
+.stars{display:inline-flex;align-items:center;gap:1px;}
+.star{font-size:13px;}
+.star.on{color:var(--gold);}
+.star.off{color:var(--muted3);}
+.star-score{font-size:13px;font-weight:800;color:var(--text);margin-left:4px;}
+.star-ct{font-size:12px;color:var(--muted);}
+
+.cat-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;}
+.cat-chip{
+  font-size:11px;background:var(--surface2);
+  border:1px solid var(--border);border-radius:6px;
+  padding:3px 8px;color:var(--muted);
+  display:inline-flex;align-items:center;gap:3px;
+}
+.cat-chip .sc{font-weight:700;color:var(--text2);}
+
+.quote-snip{
+  font-family:var(--serif);font-style:italic;
+  font-size:14px;color:var(--muted);line-height:1.6;
+  border-left:3px solid var(--border);padding-left:12px;
+  margin-bottom:10px;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+}
+
+.post-actions{display:flex;align-items:center;gap:2px;}
+.act-btn{
+  background:none;border:none;font-size:12px;font-weight:700;
+  color:var(--muted);padding:5px 9px;border-radius:6px;
+  cursor:pointer;display:inline-flex;align-items:center;gap:4px;
+  transition:all .1s;
+}
+.act-btn:hover{background:var(--bg);color:var(--text);}
+.act-btn.report:hover{color:var(--red);background:var(--red-bg);}
+
+/* ═══════════════════════════════════════
+   SECTION HEADERS
+═══════════════════════════════════════ */
+.sec-header{
+  display:flex;align-items:flex-end;justify-content:space-between;
+  margin-bottom:16px;padding:20px 0 0;
+}
+.sec-title{font-size:18px;font-weight:800;color:var(--text);letter-spacing:-.02em;}
+.sec-title span{color:var(--teal);}
+.sec-sub{font-size:13px;color:var(--muted);margin-top:2px;}
+.see-all{font-size:13px;font-weight:700;color:var(--teal);display:flex;align-items:center;gap:3px;transition:gap .15s;}
+.see-all:hover{gap:7px;text-decoration:none;}
+
+/* ═══════════════════════════════════════
+   SORT BAR
+═══════════════════════════════════════ */
+.sort-bar{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);padding:8px 14px;
+  margin-bottom:10px;display:flex;align-items:center;gap:6px;
+}
+.sort-label{font-size:11px;font-weight:800;color:var(--muted2);text-transform:uppercase;letter-spacing:.06em;margin-right:4px;}
+.sort-btn{
+  background:none;border:none;font-size:13px;font-weight:700;
+  color:var(--muted);padding:5px 12px;border-radius:8px;
+  cursor:pointer;transition:all .15s;
+}
+.sort-btn:hover{background:var(--bg);}
+.sort-btn.active{background:var(--teal-light);color:var(--teal-dark);}
+
+/* ═══════════════════════════════════════
+   SPECIALTY FILTER BAR
+═══════════════════════════════════════ */
+.spec-bar{
+  display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;
+  scrollbar-width:none;margin-bottom:16px;
+}
+.spec-bar::-webkit-scrollbar{display:none;}
+.spec-btn{
+  background:var(--surface);border:1.5px solid var(--border);
+  border-radius:100px;padding:7px 16px;
+  font-size:13px;font-weight:600;color:var(--muted);
+  white-space:nowrap;cursor:pointer;
+  transition:all .2s;display:inline-flex;align-items:center;gap:6px;
+}
+.spec-btn:hover,.spec-btn.active{
+  background:var(--teal-light);border-color:var(--teal);color:var(--teal-dark);
+}
+
+/* ═══════════════════════════════════════
+   FACILITY HEADER (detail view)
+═══════════════════════════════════════ */
+.fac-header{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);padding:24px;margin-bottom:12px;
+}
+.fac-header-top{display:flex;align-items:flex-start;gap:14px;margin-bottom:16px;}
+.fac-icon-wrap{
+  width:52px;height:52px;border-radius:12px;
+  background:var(--teal-light);
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;flex-shrink:0;
+}
+.fac-name{font-size:22px;font-weight:800;letter-spacing:-.02em;margin-bottom:4px;}
+.fac-meta-row{
+  display:flex;align-items:center;gap:10px;
+  font-size:13px;color:var(--muted);flex-wrap:wrap;
+}
+.fac-type-pill{
+  background:var(--teal-light);border:1px solid rgba(20,184,166,.25);
+  border-radius:100px;padding:2px 10px;
+  font-size:11px;font-weight:700;color:var(--teal-dark);
+}
+
+.big-score-row{
+  display:flex;align-items:center;gap:20px;
+  padding:16px 0 0;border-top:1px solid var(--border);
+}
+.big-score-circle{
+  width:72px;height:72px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:24px;font-weight:900;
+  border:3px solid;flex-shrink:0;
+}
+.big-score-circle.good{color:var(--green);border-color:var(--green);background:var(--green-bg);}
+.big-score-circle.ok{color:var(--amber);border-color:var(--amber);background:var(--amber-bg);}
+.big-score-circle.bad{color:var(--red);border-color:var(--red);background:var(--red-bg);}
+.big-score-circle.none{color:var(--muted2);border-color:var(--border2);background:var(--surface2);}
+.big-score-info{flex:1;}
+.big-score-label{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--muted2);margin-bottom:3px;}
+.would-tag{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:12px;font-weight:700;padding:3px 10px;border-radius:100px;margin-top:5px;
+}
+.would-tag.yes{background:var(--green-bg);color:#047857;}
+.would-tag.no{background:var(--red-bg);color:#b91c1c;}
+.fac-actions-row{display:flex;gap:8px;margin-left:auto;}
+
+/* Rating breakdown grid */
+.cat-breakdown{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));
+  gap:10px;margin-top:16px;
+}
+.cat-bd-item{background:var(--surface2);border-radius:10px;padding:10px 12px;border:1px solid var(--border);}
+.cat-bd-name{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:5px;}
+.cat-bd-bar-wrap{background:var(--border);border-radius:100px;height:6px;overflow:hidden;margin-bottom:4px;}
+.cat-bd-bar{height:100%;border-radius:100px;transition:width .9s ease;}
+.cat-bd-bar.good{background:linear-gradient(90deg,var(--green),#059669);}
+.cat-bd-bar.ok{background:linear-gradient(90deg,var(--amber),#d97706);}
+.cat-bd-bar.bad{background:linear-gradient(90deg,var(--red),#dc2626);}
+.cat-bd-val{font-size:14px;font-weight:900;color:var(--text);}
+
+/* ═══════════════════════════════════════
+   REVIEW COMMENT CARDS
+═══════════════════════════════════════ */
+.rev-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);padding:16px 18px;
+  margin-bottom:10px;position:relative;
+  transition:box-shadow .2s;
+}
+.rev-card:hover{box-shadow:var(--shadow-md);}
+.rev-card:hover .rev-report-btn{opacity:1;}
+
+.rev-head{display:flex;align-items:center;gap:9px;margin-bottom:10px;flex-wrap:wrap;}
+.rev-avatar{
+  width:28px;height:28px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:800;color:#fff;flex-shrink:0;
+}
+.rev-user{font-size:13px;font-weight:700;color:var(--teal);}
+.rev-role{font-size:12px;color:var(--muted2);background:var(--bg);border:1px solid var(--border);border-radius:100px;padding:1px 9px;}
+.rev-time{font-size:11px;color:var(--muted3);}
+.rev-returned{
+  margin-left:auto;font-size:11px;font-weight:700;
+  padding:2px 9px;border-radius:100px;display:inline-flex;align-items:center;gap:4px;
+}
+.rev-returned.yes{background:var(--green-bg);color:#047857;}
+.rev-returned.no{background:var(--red-bg);color:#b91c1c;}
+
+.rev-title{font-size:15px;font-weight:800;color:var(--text);margin-bottom:6px;letter-spacing:-.01em;}
+.rev-cat-row{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:9px;}
+.rev-cat-pill{
+  font-size:11px;background:var(--surface2);border:1px solid var(--border);
+  border-radius:6px;padding:2px 8px;color:var(--muted);
+  display:inline-flex;align-items:center;gap:3px;
+}
+.rev-cat-pill .s{font-weight:800;color:var(--text2);}
+
+.rev-body{
+  font-family:var(--serif);font-size:14.5px;color:var(--text2);
+  line-height:1.75;margin-bottom:10px;
+}
+.rev-footer{display:flex;align-items:center;gap:4px;}
+.rev-vote{
+  background:none;border:none;font-size:12px;font-weight:700;
+  color:var(--muted);padding:4px 8px;border-radius:6px;
+  cursor:pointer;display:inline-flex;align-items:center;gap:4px;
+  transition:all .1s;
+}
+.rev-vote:hover{background:var(--bg);}
+.rev-vote.up:hover,.rev-vote.up.voted{color:#ef4444;}
+.rev-vote.down:hover,.rev-vote.down.voted{color:#6366f1;}
+.rev-vote-score{font-size:12px;font-weight:800;color:var(--muted);padding:0 3px;}
+.rev-report-btn{
+  opacity:0;transition:opacity .15s;margin-left:auto;
+  background:none;border:none;font-size:11px;font-weight:700;
+  color:var(--muted2);padding:4px 8px;border-radius:6px;cursor:pointer;
+}
+.rev-report-btn:hover{background:var(--red-bg);color:var(--red);}
+.rev-reported-overlay{
+  display:none;position:absolute;inset:0;background:rgba(255,255,255,.92);
+  border-radius:var(--radius);align-items:center;justify-content:center;
+  gap:8px;font-size:13px;font-weight:700;color:var(--muted);
+}
+.rev-reported-overlay.show{display:flex;}
+
+/* ═══════════════════════════════════════
+   SIDEBAR
+═══════════════════════════════════════ */
+.side-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);margin-bottom:12px;overflow:hidden;
+}
+.side-card-head{
+  background:linear-gradient(135deg,var(--slate),var(--slate2));
+  padding:12px 16px;font-size:13px;font-weight:800;
+  color:#fff;display:flex;align-items:center;gap:7px;letter-spacing:-.01em;
+}
+.side-card-body{padding:16px;}
+.side-card-body p{font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:10px;}
+.side-rule{
+  font-size:12px;color:var(--muted);padding:7px 0;
+  border-top:1px solid var(--border);
+  display:flex;align-items:flex-start;gap:8px;line-height:1.5;
+}
+.side-rule .n{font-weight:900;color:var(--teal);flex-shrink:0;font-size:13px;}
+.btn-side{
+  display:block;width:100%;border-radius:8px;padding:9px;
+  font-weight:700;font-size:13px;text-align:center;cursor:pointer;
+  transition:all .15s;margin-bottom:8px;border:none;
+}
+.btn-side.primary{background:var(--teal);color:#fff;}
+.btn-side.primary:hover{background:var(--teal-dark);}
+.btn-side.outline{background:transparent;color:var(--text2);border:1.5px solid var(--border2);}
+.btn-side.outline:hover{border-color:var(--teal);color:var(--teal);}
+
+.disclaimer-side{
+  background:#fff;border:1px solid #fde68a;
+  border-radius:var(--radius);padding:12px 14px;margin-bottom:12px;
+}
+.disclaimer-side h4{font-size:11px;font-weight:800;color:#92400e;text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px;display:flex;align-items:center;gap:5px;}
+.disclaimer-side p{font-size:11.5px;color:#78350f;line-height:1.6;}
+.disclaimer-side a{color:#b45309;}
+
+/* ═══════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════ */
+footer{
+  background:var(--slate);color:#94a3b8;
+  padding:48px 24px 32px;margin-top:64px;
+}
+footer .foot-grid{max-width:1160px;margin:0 auto;}
+footer .foot-logo{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+footer .foot-logo-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--teal),#0891b2);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;}
+footer .foot-logo-text{font-weight:800;font-size:16px;color:#fff;letter-spacing:-.4px;}
+footer .foot-desc{font-size:13px;line-height:1.7;max-width:320px;margin-bottom:24px;}
+footer .foot-links{display:flex;gap:20px;flex-wrap:wrap;margin-bottom:24px;}
+footer .foot-links a{font-size:13px;color:#64748b;transition:color .15s;}
+footer .foot-links a:hover{color:var(--teal);}
+footer .foot-legal{
+  border-top:1px solid rgba(255,255,255,.06);padding-top:20px;
+  font-size:12px;color:#475569;line-height:1.7;
+}
+footer .foot-legal strong{color:#64748b;}
+
+/* ═══════════════════════════════════════
+   MODALS
+═══════════════════════════════════════ */
+.modal-overlay{
+  display:none;position:fixed;inset:0;
+  background:rgba(15,23,42,.6);backdrop-filter:blur(6px);
+  z-index:500;align-items:center;justify-content:center;
+  padding:16px;overflow-y:auto;
+}
+.modal-overlay.open{display:flex;}
+.modal{
+  background:#fff;border-radius:20px;width:100%;
+  box-shadow:0 32px 80px rgba(0,0,0,.22);
+  animation:modalIn .22s cubic-bezier(.34,1.56,.64,1);
+  margin:auto;
+}
+@keyframes modalIn{from{opacity:0;transform:scale(.95) translateY(12px);}to{opacity:1;transform:scale(1) translateY(0);}}
+.modal-sm{max-width:480px;}
+.modal-md{max-width:580px;}
+.modal-lg{max-width:680px;}
+.modal-head{
+  padding:20px 24px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;background:#fff;z-index:10;border-radius:20px 20px 0 0;
+}
+.modal-head h2{font-size:18px;font-weight:800;letter-spacing:-.02em;}
+.modal-close{
+  background:none;border:1px solid var(--border);color:var(--muted);
+  width:34px;height:34px;border-radius:8px;cursor:pointer;font-size:18px;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .15s;
+}
+.modal-close:hover{border-color:var(--red);color:var(--red);}
+.modal-body{padding:24px;max-height:70vh;overflow-y:auto;}
+.modal-foot{
+  padding:14px 24px;border-top:1px solid var(--border);
+  display:flex;align-items:center;justify-content:flex-end;gap:10px;
+  border-radius:0 0 20px 20px;
+}
+
+/* ═══════════════════════════════════════
+   FORMS
+═══════════════════════════════════════ */
+.f-group{margin-bottom:18px;}
+.f-label{
+  display:block;font-size:12px;font-weight:800;
+  color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:7px;
+}
+.f-label .req{color:var(--red);}
+.f-input{
+  width:100%;background:var(--surface2);
+  border:1.5px solid var(--border);border-radius:10px;
+  padding:10px 13px;color:var(--text);font-size:14px;
+  outline:none;transition:all .2s;
+}
+.f-input:focus{border-color:var(--teal);background:#fff;box-shadow:0 0 0 3px rgba(20,184,166,.08);}
+.f-input.err{border-color:var(--red);}
+textarea.f-input{resize:vertical;min-height:100px;line-height:1.6;}
+select.f-input{cursor:pointer;}
+.f-hint{font-size:11.5px;color:var(--muted2);margin-top:4px;}
+.f-err{font-size:11.5px;color:var(--red);margin-top:4px;display:flex;align-items:center;gap:4px;}
+.f-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+
+/* Step indicator */
+.step-track{display:flex;align-items:center;justify-content:center;gap:0;margin-bottom:28px;}
+.step-item{display:flex;flex-direction:column;align-items:center;}
+.step-num{
+  width:36px;height:36px;border-radius:50%;border:2px solid;
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:800;transition:all .3s;
+}
+.step-num.done{background:var(--teal);border-color:var(--teal);color:#fff;}
+.step-num.active{background:#fff;border-color:var(--teal);color:var(--teal);}
+.step-num.future{background:#fff;border-color:var(--border2);color:var(--muted2);}
+.step-lbl{font-size:11px;font-weight:700;margin-top:4px;color:var(--muted2);}
+.step-lbl.active{color:var(--teal);}
+.step-line{width:48px;height:2px;margin-bottom:20px;transition:background .3s;}
+.step-line.done{background:var(--teal);}
+.step-line.future{background:var(--border2);}
+
+/* Star picker */
+.star-pick-row{display:flex;align-items:center;gap:4px;}
+.star-pick{font-size:26px;cursor:pointer;color:var(--muted3);transition:all .12s;line-height:1;}
+.star-pick:hover,.star-pick.on{color:var(--gold);transform:scale(1.12);}
+.star-pick-lbl{font-size:13px;font-weight:700;color:var(--muted);margin-left:8px;}
+
+/* Category rating cards in form */
+.cat-rate-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.cat-rate-card{
+  background:var(--surface2);border:1.5px solid var(--border);
+  border-radius:10px;padding:12px;transition:all .2s;
+}
+.cat-rate-card.rated{background:var(--teal-light);border-color:rgba(20,184,166,.3);}
+.cat-rate-card-head{display:flex;align-items:center;gap:7px;margin-bottom:7px;}
+.cat-rate-icon{font-size:16px;}
+.cat-rate-name{font-size:12px;font-weight:700;color:var(--text2);}
+.cat-rate-desc{font-size:11px;color:var(--muted2);margin-bottom:8px;line-height:1.4;}
+
+/* Would return buttons */
+.would-row{display:flex;gap:8px;}
+.would-btn{
+  flex:1;border:2px solid var(--border);border-radius:10px;
+  padding:10px;font-size:13px;font-weight:700;
+  cursor:pointer;background:#fff;
+  transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--muted);
+}
+.would-btn:hover{border-color:var(--border2);}
+.would-btn.yes.sel{background:var(--green-bg);border-color:#6ee7b7;color:#047857;}
+.would-btn.maybe.sel{background:var(--amber-bg);border-color:#fcd34d;color:#b45309;}
+.would-btn.no.sel{background:var(--red-bg);border-color:#fca5a5;color:#b91c1c;}
+.would-btn span.wi{font-size:20px;}
+
+/* Privacy toggle */
+.privacy-row{
+  display:flex;align-items:center;gap:12px;
+  background:var(--teal-light);border:1px solid rgba(20,184,166,.2);
+  border-radius:10px;padding:12px 14px;
+}
+.toggle-pill{
+  width:42px;height:24px;background:var(--teal);border-radius:100px;
+  position:relative;flex-shrink:0;
+}
+.toggle-pill::after{
+  content:'';position:absolute;width:18px;height:18px;
+  background:#fff;border-radius:50%;top:3px;right:3px;
+  box-shadow:0 1px 3px rgba(0,0,0,.2);
+}
+
+/* HIPAA warning */
+.hipaa-warn{
+  background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;
+  padding:12px 14px;display:flex;gap:10px;margin-bottom:0;
+}
+.hipaa-warn-icon{font-size:18px;flex-shrink:0;margin-top:1px;}
+.hipaa-warn-text strong{display:block;font-size:13px;font-weight:800;color:#9a3412;margin-bottom:2px;}
+.hipaa-warn-text p{font-size:12.5px;color:#c2410c;line-height:1.55;}
+
+/* Report reasons */
+.report-option{
+  display:flex;align-items:flex-start;gap:10px;
+  border:1.5px solid var(--border);border-radius:10px;
+  padding:12px 13px;margin-bottom:8px;cursor:pointer;
+  transition:all .15s;
+}
+.report-option:hover{border-color:var(--border2);}
+.report-option.sel{border-color:var(--red);background:var(--red-bg);}
+.report-option input{margin-top:2px;flex-shrink:0;accent-color:var(--red);}
+.report-option-title{font-size:13px;font-weight:700;color:var(--text);display:block;margin-bottom:2px;}
+.report-option-desc{font-size:12px;color:var(--muted);}
+
+/* Buttons */
+.btn-submit{
+  background:var(--teal);color:#fff;border:none;
+  border-radius:10px;padding:11px 28px;
+  font-weight:800;font-size:14px;cursor:pointer;
+  transition:all .2s;display:inline-flex;align-items:center;gap:7px;
+}
+.btn-submit:hover:not(:disabled){background:var(--teal-dark);transform:translateY(-1px);}
+.btn-submit:disabled{opacity:.6;cursor:not-allowed;}
+.btn-cancel{
+  background:transparent;border:1.5px solid var(--border2);
+  color:var(--muted);border-radius:10px;padding:11px 20px;
+  font-weight:700;font-size:14px;cursor:pointer;transition:all .2s;
+}
+.btn-cancel:hover{border-color:var(--muted);color:var(--text);}
+.btn-back{
+  background:transparent;border:1.5px solid var(--border);
+  color:var(--muted);border-radius:10px;padding:9px 18px;
+  font-weight:700;font-size:13px;cursor:pointer;
+  display:inline-flex;align-items:center;gap:5px;transition:all .15s;
+}
+.btn-back:hover{border-color:var(--teal);color:var(--teal);}
+.btn-primary-full{
+  background:var(--teal);color:#fff;border:none;
+  border-radius:10px;padding:11px;width:100%;
+  font-weight:800;font-size:14px;cursor:pointer;
+  transition:all .2s;margin-bottom:8px;
+}
+.btn-primary-full:hover{background:var(--teal-dark);}
+.btn-outline-full{
+  background:transparent;border:1.5px solid var(--border2);
+  color:var(--text2);border-radius:10px;padding:11px;width:100%;
+  font-weight:700;font-size:14px;cursor:pointer;transition:all .2s;
+}
+.btn-outline-full:hover{border-color:var(--teal);color:var(--teal);}
+
+/* Disclaimer modal */
+.disc-section h3{font-size:15px;font-weight:800;color:var(--teal-dark);margin:18px 0 6px;}
+.disc-section h3:first-child{margin-top:0;}
+.disc-section p,.disc-section li{font-size:13.5px;color:var(--muted);line-height:1.7;margin-bottom:5px;}
+.disc-section ul{padding-left:18px;}
+.disc-section li{margin-bottom:3px;}
+.disc-check-wrap{
+  display:flex;align-items:flex-start;gap:10px;
+  background:var(--teal-light);border:1px solid rgba(20,184,166,.2);
+  border-radius:10px;padding:12px 14px;margin-top:18px;
+}
+.disc-check-wrap input{margin-top:3px;flex-shrink:0;accent-color:var(--teal);}
+.disc-check-wrap label{font-size:13px;color:var(--text2);line-height:1.55;cursor:pointer;}
+
+/* Back link */
+.back-link{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:13px;font-weight:700;color:var(--muted);
+  cursor:pointer;padding:8px 0 16px;transition:color .15s;
+}
+.back-link:hover{color:var(--teal);}
+
+/* Empty state */
+.empty{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);padding:48px 24px;text-align:center;
+}
+.empty-emoji{font-size:44px;display:block;margin-bottom:12px;}
+.empty h3{font-size:17px;font-weight:800;margin-bottom:6px;}
+.empty p{font-size:13px;color:var(--muted);max-width:340px;margin:0 auto 16px;line-height:1.6;}
+
+/* Toast */
+#toast{
+  position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(80px);
+  background:var(--slate);color:#fff;
+  border-radius:100px;padding:12px 24px;
+  font-size:14px;font-weight:600;
+  box-shadow:0 8px 32px rgba(0,0,0,.3);
+  z-index:999;transition:transform .35s cubic-bezier(.34,1.56,.64,1),opacity .35s;
+  opacity:0;pointer-events:none;
+  display:flex;align-items:center;gap:9px;white-space:nowrap;max-width:90vw;
+}
+#toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
+
+/* Agency teaser */
+.agency-card{
+  background:linear-gradient(135deg,#fef3c7,#fffbeb);
+  border:1px solid #fde68a;border-radius:var(--radius);
+  padding:20px;overflow:hidden;position:relative;
+}
+.agency-badge{
+  display:inline-flex;align-items:center;gap:5px;
+  background:#fef3c7;border:1px solid #fde68a;
+  border-radius:100px;padding:3px 10px;
+  font-size:10px;font-weight:800;color:#92400e;
+  letter-spacing:.07em;text-transform:uppercase;margin-bottom:8px;
+}
+.agency-card h3{font-size:15px;font-weight:800;color:#78350f;margin-bottom:5px;}
+.agency-card p{font-size:12px;color:#92400e;line-height:1.6;margin-bottom:12px;}
+.btn-agency{
+  background:#f59e0b;color:#fff;border:none;
+  border-radius:8px;padding:8px 18px;
+  font-weight:800;font-size:13px;cursor:pointer;transition:all .2s;
+}
+.btn-agency:hover{background:#d97706;}
+
+/* Success screen */
+.success-wrap{
+  min-height:60vh;display:flex;align-items:center;
+  justify-content:center;padding:60px 24px;
+}
+.success-box{max-width:420px;text-align:center;}
+.success-icon{
+  width:80px;height:80px;border-radius:50%;
+  background:var(--teal-light);border:3px solid var(--teal);
+  display:flex;align-items:center;justify-content:center;
+  font-size:32px;margin:0 auto 20px;
+}
+.success-box h1{font-size:26px;font-weight:800;letter-spacing:-.02em;margin-bottom:10px;}
+.success-box p{font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:6px;}
+.success-box .note{font-size:12px;color:var(--muted2);margin-bottom:24px;}
+.success-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+
+/* Review form summary */
+.review-summary{
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:10px;padding:14px;
+}
+.rs-row{display:flex;justify-content:space-between;align-items:center;font-size:13px;padding:3px 0;}
+.rs-row .rs-k{color:var(--muted);}
+.rs-row .rs-v{font-weight:700;color:var(--text2);}
+
+/* Search results header */
+.sr-header{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);padding:18px 20px;margin-bottom:10px;
+}
+.sr-header h2{font-size:20px;font-weight:800;letter-spacing:-.02em;margin-bottom:3px;}
+.sr-header p{font-size:13px;color:var(--muted);}
+.sr-filters{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;}
+.sf-chip{
+  background:var(--bg);border:1.5px solid var(--border);
+  border-radius:100px;padding:5px 14px;font-size:12px;
+  font-weight:700;color:var(--muted);cursor:pointer;transition:all .2s;
+}
+.sf-chip:hover,.sf-chip.active{background:var(--teal-light);border-color:var(--teal);color:var(--teal-dark);}
+
+@media(max-width:768px){
+  .side{display:none;}
+  .cols{flex-direction:column;}
+  .f-row{grid-template-columns:1fr;}
+  .cat-rate-grid{grid-template-columns:1fr;}
+  .hero h1{font-size:2rem;}
+  .h-stat{padding:0 16px;}
+  #nav .nav-logo-text{display:none;}
+  .hero-stats{gap:0;}
+}
+</style>
+</head>
+<body>
+
+<div id="toast"></div>
+
+<!-- ══════════ NAV ══════════ -->
+<nav id="nav">
+  <a class="nav-logo" onclick="goto('home')">
+    <div class="nav-logo-icon">🏥</div>
+    <span class="nav-logo-text">Hospital<em>Rank</em></span>
+  </a>
+  <div class="nav-search-wrap">
+    <span class="nav-search-icon">🔍</span>
+    <input type="text" id="navInput" placeholder="Search city or hospital…" autocomplete="off">
+    <div id="navDrop" class="autocomplete-drop"></div>
+  </div>
+  <div class="nav-right">
+    <div class="nav-user" id="navUserEl">
+      <div class="nav-avatar" id="navAvatarEl"></div>
+      <span id="navUsernameEl">u/loading…</span>
+      <span class="online-dot"></span>
+    </div>
+    <button class="btn-nav-review" onclick="openReviewModal()">+ Write Review</button>
+  </div>
+</nav>
+
+<!-- ══════════ APP ══════════ -->
+<div id="app">
+
+<!-- PAGE: HOME -->
+<div id="page-home" class="page active">
+  <div class="hero">
+    <div class="hero-glow"></div>
+    <div class="hero-badge"><span class="hero-badge-dot"></span>100% Free · Always Anonymous</div>
+    <h1>Know Before You Go.<br><em>Honest reviews for travel clinicians.</em></h1>
+    <p class="hero-sub">The Rate My Professor for travel healthcare. Search any city to see real ratings from nurses, techs, and therapists who've been there.</p>
+    <div class="hero-search-wrap">
+      <div class="hero-search-box">
+        <div class="hero-search-icon">🔍</div>
+        <input type="text" id="heroInput" placeholder="Search city, state, or hospital name…" autocomplete="off">
+        <button class="hero-search-btn" onclick="doHeroSearch()">Search</button>
+      </div>
+      <div id="heroDrop" class="autocomplete-drop"></div>
+    </div>
+    <div class="hero-chips" id="heroCities"></div>
+    <div class="hero-stats">
+      <div class="h-stat"><span class="h-stat-n" id="statReviews">0</span><span class="h-stat-l">Reviews</span></div>
+      <div class="h-stat"><span class="h-stat-n">3,800+</span><span class="h-stat-l">Facilities</span></div>
+      <div class="h-stat"><span class="h-stat-n">All 50</span><span class="h-stat-l">States</span></div>
+      <div class="h-stat"><span class="h-stat-n">Free</span><span class="h-stat-l">Always</span></div>
+    </div>
+  </div>
+
+  <div class="wrap" style="padding-top:32px;padding-bottom:60px;">
+    <div class="cols">
+      <div class="main">
+        <div class="sort-bar">
+          <span class="sort-label">🔥 Recent Reviews</span>
+          <button class="sort-btn active" onclick="setHomeSort('hot',this)">Hot</button>
+          <button class="sort-btn" onclick="setHomeSort('new',this)">New</button>
+          <button class="sort-btn" onclick="setHomeSort('top',this)">Top Rated</button>
+        </div>
+        <div id="homeFeed"></div>
+      </div>
+      <div class="side" id="sideHome"></div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE: SEARCH RESULTS -->
+<div id="page-search" class="page">
+  <div class="wrap" style="padding-top:24px;padding-bottom:60px;">
+    <div class="back-link" onclick="goto('home')">← Back to Home</div>
+    <div class="cols">
+      <div class="main">
+        <div class="sr-header">
+          <h2 id="srTitle">Facilities</h2>
+          <p id="srSub"></p>
+          <div class="sr-filters" id="srFilters"></div>
+        </div>
+        <div id="facilityList"></div>
+      </div>
+      <div class="side" id="sideSearch"></div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE: FACILITY DETAIL -->
+<div id="page-facility" class="page">
+  <div class="wrap" style="padding-top:24px;padding-bottom:60px;">
+    <div class="back-link" id="backToSearch" onclick="goto('search')">← Back to Search Results</div>
+    <div class="cols">
+      <div class="main">
+        <div id="facDetailHeader"></div>
+        <div class="sort-bar" id="reviewSortBar">
+          <span class="sort-label">Sort:</span>
+          <button class="sort-btn active" onclick="setRevSort('top',this)">🔥 Top</button>
+          <button class="sort-btn" onclick="setRevSort('new',this)">🆕 New</button>
+          <button class="sort-btn" onclick="setRevSort('controversial',this)">⚡ Controversial</button>
+        </div>
+        <div id="reviewsList"></div>
+      </div>
+      <div class="side" id="sideFacility"></div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE: WRITE REVIEW (multi-step) -->
+<div id="page-review" class="page">
+  <div class="wrap" style="max-width:680px;padding-top:32px;padding-bottom:80px;">
+    <div class="back-link" id="reviewBackLink" onclick="goto('home')">← Back</div>
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px;">
+      <div style="width:48px;height:48px;background:var(--teal);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 4px 12px rgba(20,184,166,.3);">⭐</div>
+      <div>
+        <h1 style="font-size:22px;font-weight:800;letter-spacing:-.02em;">Write a Review</h1>
+        <p style="font-size:13px;color:var(--muted);">Help fellow travel clinicians make informed decisions</p>
+      </div>
+    </div>
+    <!-- Step track -->
+    <div class="step-track" id="stepTrack"></div>
+    <!-- Step panels -->
+    <div id="stepPanel"></div>
+  </div>
+</div>
+
+<!-- PAGE: SUCCESS -->
+<div id="page-success" class="page">
+  <div class="success-wrap">
+    <div class="success-box">
+      <div class="success-icon">✅</div>
+      <h1>Review Posted!</h1>
+      <p>Your anonymous review of <strong id="successFacName">this facility</strong> has been submitted. Thank you for helping fellow travelers.</p>
+      <p class="note">Reviews appear after a brief moderation check — usually within minutes.</p>
+      <div class="success-btns">
+        <button class="btn-primary-full" style="width:auto;padding:10px 24px;" onclick="goto('home')">🏥 Browse Facilities</button>
+        <button class="btn-outline-full" style="width:auto;padding:10px 24px;" onclick="startFreshReview()">✍️ Write Another</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /#app -->
+
+<!-- ══════════ FOOTER ══════════ -->
+<footer id="siteFooter">
+  <div class="foot-grid">
+    <div class="foot-logo">
+      <div class="foot-logo-icon">🏥</div>
+      <span class="foot-logo-text">HospitalRank</span>
+    </div>
+    <p class="foot-desc">The honest review platform for traveling healthcare professionals. Free forever for clinicians.</p>
+    <div class="foot-links">
+      <a href="#" onclick="goto('home');return false;">Home</a>
+      <a href="#" onclick="openReviewModal();return false;">Write a Review</a>
+      <a href="#" onclick="openModal('disclaimerModal');return false;">Terms of Use</a>
+      <a href="#" onclick="openModal('disclaimerModal');return false;">Privacy Policy</a>
+      <a href="#" onclick="showToast('Agency portal opening soon — join the waitlist!','🏢')">For Agencies</a>
+    </div>
+    <div class="foot-legal">
+      <p><strong>⚖️ Legal Disclaimer:</strong> HospitalRank and its operators are not liable for the accuracy, completeness, or reliability of any user-generated reviews. All reviews represent the personal opinions of anonymous users only. HospitalRank is not affiliated with any hospital, healthcare system, staffing agency, or licensing body. Nothing on this platform constitutes medical, legal, or employment advice. Reviews are subject to removal at our sole discretion. By using this platform, you agree to our full <a href="#" onclick="openModal('disclaimerModal');return false;" style="color:var(--teal);">Terms of Use</a>.</p>
+      <p style="margin-top:8px;color:#334155;">© 2025 HospitalRank. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+
+<!-- ══════════════════════════════
+     DISCLAIMER MODAL
+══════════════════════════════ -->
+<div class="modal-overlay open" id="disclaimerModal">
+  <div class="modal modal-md" style="max-height:90vh;display:flex;flex-direction:column;">
+    <div class="modal-head">
+      <h2>⚖️ Terms of Use & Disclaimer</h2>
+    </div>
+    <div class="modal-body disc-section">
+      <h3>Welcome to HospitalRank</h3>
+      <p>Before continuing, please read and agree to our terms. HospitalRank is a free, community-driven review platform for traveling healthcare professionals.</p>
+
+      <h3>📋 Disclaimer of Liability</h3>
+      <p>HospitalRank, its owners, operators, employees, and affiliates <strong>are not responsible or liable</strong> for the accuracy, completeness, timeliness, or reliability of any reviews, ratings, or user-generated content. All reviews represent the personal opinions of anonymous users and <strong>do not reflect the views of HospitalRank</strong>.</p>
+      <p>HospitalRank is <strong>not affiliated</strong> with any hospital, healthcare system, staffing agency, or licensing body. Nothing on this site constitutes medical, legal, employment, or professional advice of any kind.</p>
+      <p>HospitalRank reserves the right to remove any content at its sole discretion without notice or explanation.</p>
+
+      <h3>🔒 HIPAA Notice — Critical</h3>
+      <p><strong>You must NEVER include Protected Health Information (PHI) in your reviews.</strong> Prohibited content includes:</p>
+      <ul>
+        <li>Patient names, ages, dates, or any identifying characteristics</li>
+        <li>Specific patient cases, medical diagnoses, or treatment details</li>
+        <li>Any information that could be used to identify a patient</li>
+        <li>Staff member full names combined with identifying context</li>
+      </ul>
+      <p>Reviews containing potential PHI will be removed immediately and may be reported to relevant authorities. <strong>You are solely and legally responsible</strong> for ensuring your review complies with HIPAA and all applicable laws.</p>
+
+      <h3>👤 Your Anonymity</h3>
+      <p>You are assigned a randomly generated anonymous username. We do not collect your name, email address, or identifying information. Do not include personal details in your reviews. You are responsible for maintaining your own anonymity.</p>
+
+      <h3>🚩 Reporting Content</h3>
+      <p>Use the Report button on any review that contains PHI, defamatory content, harassment, or spam. Our moderation team reviews all reports promptly. HIPAA-related reports trigger immediate review.</p>
+
+      <h3>🏢 Agency Partners</h3>
+      <p>Agency job listings are clearly labeled as sponsored content and do not influence review scores or content. Agencies cannot pay to alter, remove, or suppress reviews.</p>
+
+      <div class="disc-check-wrap">
+        <input type="checkbox" id="agreeChk" onchange="document.getElementById('agreeBtn').disabled=!this.checked">
+        <label for="agreeChk">I have read and agree to the Terms of Use. I understand I must never include PHI or patient information in reviews. I understand that reviews are anonymous opinions and HospitalRank is not liable for their content. I am at least 18 years of age.</label>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-submit" id="agreeBtn" disabled onclick="agreeTerms()">I Agree & Continue →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════
+     WRITE REVIEW MODAL WRAPPER
+     (review is a full page, not a modal)
+══════════════════════════════ -->
+
+<!-- ══════════════════════════════
+     REPORT MODAL
+══════════════════════════════ -->
+<div class="modal-overlay" id="reportModal">
+  <div class="modal modal-sm">
+    <div class="modal-head">
+      <h2>🚩 Report Review</h2>
+      <button class="modal-close" onclick="closeModal('reportModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:13px;color:var(--muted);margin-bottom:14px;line-height:1.6;">Select the reason for this report. Our team reviews all reports within 24 hours.</p>
+      <label class="report-option" onclick="selReport(this,'hipaa')">
+        <input type="radio" name="rr" value="hipaa">
+        <div><span class="report-option-title">🔴 HIPAA / PHI Violation</span><span class="report-option-desc">Contains patient names, diagnoses, or other Protected Health Information.</span></div>
+      </label>
+      <label class="report-option" onclick="selReport(this,'defamatory')">
+        <input type="radio" name="rr" value="defamatory">
+        <div><span class="report-option-title">⚖️ Defamatory or False</span><span class="report-option-desc">Contains false statements that could harm an individual or institution.</span></div>
+      </label>
+      <label class="report-option" onclick="selReport(this,'harassment')">
+        <input type="radio" name="rr" value="harassment">
+        <div><span class="report-option-title">🚫 Harassment / Personal Attack</span><span class="report-option-desc">Targets a specific individual by name in a harassing manner.</span></div>
+      </label>
+      <label class="report-option" onclick="selReport(this,'spam')">
+        <input type="radio" name="rr" value="spam">
+        <div><span class="report-option-title">🤖 Spam or Fake Review</span><span class="report-option-desc">This review appears fabricated, automated, or promotional.</span></div>
+      </label>
+      <label class="report-option" onclick="selReport(this,'other')">
+        <input type="radio" name="rr" value="other">
+        <div><span class="report-option-title">📌 Other Violation</span><span class="report-option-desc">Violates community guidelines for another reason.</span></div>
+      </label>
+      <div class="f-group" style="margin-top:12px;margin-bottom:0;">
+        <label class="f-label">Additional Details (Optional)</label>
+        <textarea class="f-input" id="reportExtra" placeholder="Describe the issue…" style="min-height:60px;"></textarea>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-cancel" onclick="closeModal('reportModal')">Cancel</button>
+      <button class="btn-submit" onclick="submitReport()">Submit Report</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════
+   DATA — CITIES & FACILITIES
+═══════════════════════════════════════ */
+const CITIES=[
+  {id:'austin-tx',name:'Austin',state:'TX',facilities:[
+    {id:'st-davids-austin',name:"St. David's Medical Center",type:'Hospital',beds:530,specs:['ICU','ER','Med-Surg','L&D','OR']},
+    {id:'seton-austin',name:'Ascension Seton Medical Center',type:'Hospital',beds:429,specs:['ICU','Tele','Med-Surg','Neuro']},
+    {id:'bsw-round-rock',name:'Baylor Scott & White Round Rock',type:'Hospital',beds:160,specs:['OR','Ortho','Med-Surg']},
+    {id:'concentra-austin',name:'Concentra Urgent Care — South Austin',type:'Urgent Care',beds:null,specs:['Urgent Care']},
+    {id:'fser-cedar-park',name:'Freestanding ER — Cedar Park',type:'Freestanding ER',beds:null,specs:['ER']},
+  ]},
+  {id:'houston-tx',name:'Houston',state:'TX',facilities:[
+    {id:'houston-methodist',name:'Houston Methodist Hospital',type:'Hospital',beds:891,specs:['ICU','Neuro','Cardio','OR','Med-Surg']},
+    {id:'memorial-hermann-tmc',name:'Memorial Hermann Texas Medical Center',type:'Hospital',beds:1070,specs:['Trauma','ICU','L&D','NICU','OR']},
+    {id:'ben-taub',name:'Ben Taub Hospital',type:'Hospital',beds:586,specs:['Trauma','ER','Med-Surg','Psych']},
+    {id:'texas-childrens',name:"Texas Children's Hospital",type:'Hospital',beds:672,specs:['PICU','NICU','Peds']},
+    {id:'urgent-houston',name:'NextCare Urgent Care Houston',type:'Urgent Care',beds:null,specs:['Urgent Care']},
+  ]},
+  {id:'dallas-tx',name:'Dallas',state:'TX',facilities:[
+    {id:'ut-southwestern',name:'UT Southwestern Medical Center',type:'Hospital',beds:698,specs:['ICU','Neuro','Onco','Med-Surg','OR']},
+    {id:'baylor-dallas',name:'Baylor University Medical Center',type:'Hospital',beds:797,specs:['ICU','Cardio','OR','L&D']},
+    {id:'parkland',name:'Parkland Memorial Hospital',type:'Hospital',beds:870,specs:['Trauma','ER','L&D','NICU']},
+    {id:'carenow-dallas',name:'CareNow Urgent Care Dallas',type:'Urgent Care',beds:null,specs:['Urgent Care']},
+    {id:'fser-irving',name:'Freestanding ER — Irving',type:'Freestanding ER',beds:null,specs:['ER']},
+  ]},
+  {id:'nashville-tn',name:'Nashville',state:'TN',facilities:[
+    {id:'vanderbilt-umc',name:'Vanderbilt University Medical Center',type:'Hospital',beds:1093,specs:['Trauma','ICU','OR','Neuro','L&D']},
+    {id:'tristar-skyline',name:'TriStar Skyline Medical Center',type:'Hospital',beds:250,specs:['Cardio','ICU','Med-Surg','OR']},
+    {id:'st-thomas-midtown',name:'Saint Thomas Midtown Hospital',type:'Hospital',beds:497,specs:['Med-Surg','L&D','OR','Tele']},
+    {id:'afc-nashville',name:'AFC Urgent Care Nashville',type:'Urgent Care',beds:null,specs:['Urgent Care']},
+  ]},
+  {id:'denver-co',name:'Denver',state:'CO',facilities:[
+    {id:'uchealth-denver',name:'UCHealth University of Colorado Hospital',type:'Hospital',beds:706,specs:['Trauma','ICU','Neuro','Onco','OR']},
+    {id:'sky-ridge',name:'Sky Ridge Medical Center',type:'Hospital',beds:284,specs:['L&D','OR','Med-Surg','Tele']},
+    {id:'st-josephs-denver',name:"SCL Health St. Joseph's",type:'Hospital',beds:364,specs:['Cardio','ICU','Med-Surg']},
+    {id:'concentra-denver',name:'Concentra Urgent Care Denver',type:'Urgent Care',beds:null,specs:['Urgent Care']},
+    {id:'fser-highlands-ranch',name:'Freestanding ER — Highlands Ranch',type:'Freestanding ER',beds:null,specs:['ER']},
+  ]},
+  {id:'phoenix-az',name:'Phoenix',state:'AZ',facilities:[
+    {id:'banner-university-phoenix',name:'Banner University Medical Center',type:'Hospital',beds:765,specs:['Trauma','ICU','L&D','NICU','Neuro']},
+    {id:'mayo-phoenix',name:'Mayo Clinic — Phoenix',type:'Hospital',beds:280,specs:['ICU','Onco','OR','Neuro']},
+    {id:'honorhealth-scottsdale',name:'HonorHealth Scottsdale Osborn',type:'Hospital',beds:337,specs:['Cardio','ICU','Med-Surg','OR']},
+    {id:'nextcare-phoenix',name:'NextCare Urgent Care Phoenix',type:'Urgent Care',beds:null,specs:['Urgent Care']},
+    {id:'fser-chandler',name:'Freestanding ER — Chandler',type:'Freestanding ER',beds:null,specs:['ER']},
+  ]},
+  {id:'miami-fl',name:'Miami',state:'FL',facilities:[
+    {id:'jackson-memorial',name:'Jackson Memorial Hospital',type:'Hospital',beds:1550,specs:['Trauma','ICU','L&D','NICU','Neuro','OR']},
+    {id:'baptist-health-miami',name:'Baptist Health South Florida',type:'Hospital',beds:722,specs:['Cardio','ICU','Med-Surg','OR']},
+    {id:'uhealth-miami',name:'University of Miami — UHealth',type:'Hospital',beds:560,specs:['Onco','ICU','Neuro','OR']},
+    {id:'carespot-miami',name:'CareSpot Urgent Care Miami',type:'Urgent Care',beds:null,specs:['Urgent Care']},
+    {id:'fser-doral',name:'Freestanding ER — Doral',type:'Freestanding ER',beds:null,specs:['ER']},
+  ]},
+  {id:'seattle-wa',name:'Seattle',state:'WA',facilities:[
+    {id:'harborview',name:'Harborview Medical Center',type:'Hospital',beds:413,specs:['Trauma','ICU','Burn','Neuro']},
+    {id:'swedish-firsthill',name:'Swedish Medical Center — First Hill',type:'Hospital',beds:697,specs:['Cardio','L&D','NICU','OR']},
+    {id:'virginia-mason',name:'Virginia Mason Medical Center',type:'Hospital',beds:336,specs:['Onco','ICU','Med-Surg','OR']},
+    {id:'urgent-seattle',name:'Urgent Care Seattle',type:'Urgent Care',beds:null,specs:['Urgent Care']},
+  ]},
+  {id:'chicago-il',name:'Chicago',state:'IL',facilities:[
+    {id:'northwestern-memorial',name:'Northwestern Memorial Hospital',type:'Hospital',beds:894,specs:['Cardio','ICU','Neuro','L&D','OR']},
+    {id:'uchicago-medicine',name:'University of Chicago Medicine',type:'Hospital',beds:632,specs:['Trauma','ICU','Onco','Neuro']},
+    {id:'rush-university',name:'Rush University Medical Center',type:'Hospital',beds:676,specs:['ICU','OR','Tele','Med-Surg']},
+    {id:'concentra-chicago',name:'Concentra Urgent Care Chicago',type:'Urgent Care',beds:null,specs:['Urgent Care']},
+  ]},
+  {id:'las-vegas-nv',name:'Las Vegas',state:'NV',facilities:[
+    {id:'sunrise-hospital',name:'Sunrise Hospital & Medical Center',type:'Hospital',beds:664,specs:['ICU','L&D','NICU','OR','Med-Surg']},
+    {id:'umc-nevada',name:'University Medical Center Nevada',type:'Hospital',beds:541,specs:['Trauma','ICU','Burn','ER']},
+    {id:'valley-hospital-lv',name:'Valley Hospital Medical Center',type:'Hospital',beds:365,specs:['Cardio','OR','Med-Surg','Tele']},
+    {id:'carenow-lv',name:'CareNow Urgent Care Las Vegas',type:'Urgent Care',beds:null,specs:['Urgent Care']},
+    {id:'fser-summerlin',name:'Freestanding ER — Summerlin',type:'Freestanding ER',beds:null,specs:['ER']},
+  ]},
+];
+
+const CAT_CONFIG=[
+  {id:'management',label:'Management',icon:'📋',desc:'Leadership, communication, support'},
+  {id:'safety',label:'Safety Culture',icon:'🛡️',desc:'Ratios, protocols, equipment'},
+  {id:'pay',label:'Pay Fairness',icon:'💰',desc:'Compensation, differentials, accuracy'},
+  {id:'conditions',label:'Work Conditions',icon:'🏥',desc:'Environment, culture, work-life balance'},
+  {id:'traveler',label:'Traveler Friendly',icon:'✈️',desc:'Orientation, support for travel staff'},
+];
+const STAR_LABELS={1:'Poor',2:'Below Avg',3:'Average',4:'Good',5:'Excellent'};
+const SPECIALTIES=['ICU / Critical Care RN','ER / ED RN','Med-Surg RN','L&D / Postpartum RN','OR / Periop RN','NICU / PICU RN','Telemetry RN','PCU RN','Float Pool RN','Surgical Tech','Physical Therapist','Occupational Therapist','Radiology Tech','Respiratory Therapist','CNA / PCT','Other'];
+const CONTRACT_LENS=['8 weeks','13 weeks','17 weeks','26 weeks','Per Diem','Other'];
+const ADJECTIVES=['Wandering','Nomadic','Traveling','Roaming','Drifting','Rolling','Mobile','Floating','Transient','Peripatetic'];
+const ROLES=['RN','BSN','MSN','RT','ST','PT','OT','PCT','Tech','LPN','CRNA'];
+
+/* ═══════════════════════════════════════
+   STATE
+═══════════════════════════════════════ */
+let USER=null, CURRENT_CITY=null, CURRENT_FAC=null;
+let REVIEW_STEP=1, REVIEW_RETURN=null, REVIEW_RATINGS={}, REVIEW_FAC_ID=null, REVIEW_CITY_ID=null;
+let REPORT_TARGET=null, HOME_SORT='hot', REV_SORT='top';
+let PREV_PAGE='home';
+
+/* ═══════════════════════════════════════
+   STORAGE
+═══════════════════════════════════════ */
+const ls=(k,v)=>{if(v===undefined){try{return JSON.parse(localStorage.getItem(k));}catch{return null;}}else localStorage.setItem(k,JSON.stringify(v));};
+const allReviews=()=>ls('hr_reviews')||[];
+const facReviews=(id)=>allReviews().filter(r=>r.facId===id&&!r.hidden);
+const saveReviews=(r)=>ls('hr_reviews',r);
+
+/* ═══════════════════════════════════════
+   BOOT
+═══════════════════════════════════════ */
+window.addEventListener('DOMContentLoaded',()=>{
+  initUser();
+  if(ls('hr_agreed')) document.getElementById('disclaimerModal').classList.remove('open');
+  initNavSearch();
+  initHeroSearch();
+  renderPopCities();
+  renderHomeFeed();
+  renderSidebar('sideHome');
+  renderSidebar('sideSearch');
+  renderSidebar('sideFacility');
+  updateStats();
+  seedDemoReviews();
+});
+
+function seedDemoReviews(){
+  if(ls('hr_seeded')) return;
+  const demos=[
+    {id:'demo1',facId:'houston-methodist',facName:'Houston Methodist Hospital',cityId:'houston-tx',username:'TravelingRN_4281',role:'ICU / Critical Care RN',contractLen:'13 weeks',year:2024,ratings:{management:5,safety:5,pay:4,conditions:4,traveler:5},overall:5,title:'Best ICU contract I have ever taken',body:'Absolute gold standard. The charge nurses actually care about you as a traveler. Ratios were always 1:2 in the ICU, never broken. The float educator was available 24/7 during orientation. Pay hit on time every single week. I extended twice and would do it again in a heartbeat.',wouldReturn:true,upvotes:47,downvotes:2,ts:Date.now()-86400000*3,hidden:false},
+    {id:'demo2',facId:'vanderbilt-umc',facName:'Vanderbilt University Medical Center',cityId:'nashville-tn',username:'NomadST_7892',role:'Surgical Tech',contractLen:'13 weeks',year:2024,ratings:{management:3,safety:4,pay:3,conditions:3,traveler:2},overall:3,title:'Great learning experience but management is rough on travelers',body:"Busy, level-one trauma so there's never a dull moment in the OR. The staff nurses were welcoming enough. But management made promises about scheduling that evaporated after week 1. Orientation was 2 days and nowhere near enough for the acuity. Pay was accurate but the housing stipend had hidden deductions I had to fight to get back.",wouldReturn:false,upvotes:31,downvotes:5,ts:Date.now()-86400000*7,hidden:false},
+    {id:'demo3',facId:'st-davids-austin',facName:"St. David's Medical Center",cityId:'austin-tx',username:'RoamingRN_1134',role:'L&D / Postpartum RN',contractLen:'26 weeks',year:2025,ratings:{management:4,safety:4,pay:5,conditions:5,traveler:4},overall:4,title:'Solid L&D unit — Austin is a great city too',body:"Really positive experience overall. The L&D unit is well run and the permanent staff treated travelers like real team members, not just warm bodies. Census was high but ratios held. Pay was excellent — the best of any contract I've done. City is fantastic for a long assignment. Would strongly recommend for L&D travelers.",wouldReturn:true,upvotes:22,downvotes:1,ts:Date.now()-86400000*2,hidden:false},
+    {id:'demo4',facId:'memorial-hermann-tmc',facName:'Memorial Hermann Texas Medical Center',cityId:'houston-tx',username:'DriftingRN_5509',role:'ER / ED RN',contractLen:'13 weeks',year:2024,ratings:{management:2,safety:3,pay:4,conditions:2,traveler:2},overall:2,title:'Understaffed, disorganized, would not return',body:"The pay was good — that's the only positive. The ER ran dangerously short staffed on most shifts. Travelers were expected to know a proprietary EMR with zero training. Charge nurses were visible in name only. I filed two safety complaints that were ignored. The agency should have flagged this facility but didn't. Going in with eyes open, this one isn't worth it.",wouldReturn:false,upvotes:38,downvotes:3,ts:Date.now()-86400000*1,hidden:false},
+    {id:'demo5',facId:'mayo-phoenix',facName:'Mayo Clinic — Phoenix',cityId:'phoenix-az',username:'MobileRN_2271',role:'ICU / Critical Care RN',contractLen:'13 weeks',year:2025,ratings:{management:5,safety:5,pay:4,conditions:5,traveler:5},overall:5,title:'Mayo Phoenix sets the bar — everyone should do this contract',body:"I've done 11 contracts and this is the best facility I've worked at, period. Supplies are always stocked. Management communicates like adults. The traveler orientation program is genuinely the best I've experienced — a full two weeks with a dedicated preceptor. Culture is positive, the permanent staff is proud of where they work. Highly recommend.",wouldReturn:true,upvotes:59,downvotes:0,ts:Date.now()-86400000*5,hidden:false},
+  ];
+  const existing=allReviews();
+  const merged=[...demos,...existing.filter(r=>!demos.find(d=>d.id===r.id))];
+  saveReviews(merged);
+  ls('hr_seeded',true);
+}
+
+/* ═══════════════════════════════════════
+   USER
+═══════════════════════════════════════ */
+function initUser(){
+  let u=ls('hr_user');
+  if(!u){
+    const adj=ADJECTIVES[Math.floor(Math.random()*ADJECTIVES.length)];
+    const role=ROLES[Math.floor(Math.random()*ROLES.length)];
+    const n=Math.floor(1000+Math.random()*8999);
+    u={username:`${adj}${role}_${n}`,color:pickColor(adj)};
+    ls('hr_user',u);
+  }
+  USER=u;
+  const uel=document.getElementById('navUsernameEl');
+  const avel=document.getElementById('navAvatarEl');
+  if(uel) uel.textContent='u/'+u.username;
+  if(avel){
+    avel.textContent=u.username.substring(0,2).toUpperCase();
+    avel.style.background=u.color;
+    avel.style.width='26px';
+    avel.style.height='26px';
+  }
+}
+function pickColor(str){
+  const cols=['#14b8a6','#6366f1','#f59e0b','#ef4444','#10b981','#8b5cf6','#ec4899','#3b82f6'];
+  let h=0;
+  for(let i=0;i<str.length;i++) h=str.charCodeAt(i)+((h<<5)-h);
+  return cols[Math.abs(h)%cols.length];
+}
+function strColor(str){
+  const cols=['#14b8a6','#6366f1','#f59e0b','#10b981','#8b5cf6','#ec4899','#3b82f6','#f97316'];
+  let h=0;
+  for(let i=0;i<str.length;i++) h=str.charCodeAt(i)+((h<<5)-h);
+  return cols[Math.abs(h)%cols.length];
+}
+
+/* ═══════════════════════════════════════
+   DISCLAIMER
+═══════════════════════════════════════ */
+function agreeTerms(){
+  ls('hr_agreed',true);
+  closeModal('disclaimerModal');
+  showToast('Welcome to HospitalRank 👋','✅');
+}
+
+/* ═══════════════════════════════════════
+   NAVIGATION
+═══════════════════════════════════════ */
+function goto(page){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+page).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+  const footer=document.getElementById('siteFooter');
+  if(footer) footer.style.display=page==='review'?'none':'';
+}
+
+/* ═══════════════════════════════════════
+   SEARCH & AUTOCOMPLETE
+═══════════════════════════════════════ */
+function buildAcDropdown(q,dropEl,onSelect){
+  dropEl.innerHTML='';
+  if(q.length<2){dropEl.classList.remove('open');return;}
+  const results=[];
+  CITIES.forEach(c=>{
+    const cs=`${c.name} ${c.state}`.toLowerCase();
+    if(cs.includes(q.toLowerCase())||c.name.toLowerCase().includes(q.toLowerCase())){
+      const rc=allReviews().filter(r=>r.cityId===c.id).length;
+      results.push({type:'city',city:c,rc});
+    }
+    c.facilities.forEach(f=>{
+      if(f.name.toLowerCase().includes(q.toLowerCase())){
+        const rc=facReviews(f.id).length;
+        results.push({type:'fac',city:c,fac:f,rc});
+      }
+    });
+  });
+  if(!results.length){dropEl.classList.remove('open');return;}
+  results.slice(0,9).forEach(r=>{
+    const d=document.createElement('div');
+    d.className='ac-item';
+    if(r.type==='city'){
+      d.innerHTML=`<div class="ac-icon city">📍</div><div><div class="ac-name">${r.city.name}, ${r.city.state}</div><div class="ac-sub">${r.city.facilities.length} facilities</div></div><span class="ac-badge">${r.rc} reviews</span>`;
+      d.onclick=()=>{dropEl.classList.remove('open');onSelect('city',r.city);};
+    } else {
+      const ico=r.fac.type==='Hospital'?'🏥':r.fac.type==='Urgent Care'?'🏪':'🚨';
+      const icoCls=r.fac.type==='Hospital'?'hospital':r.fac.type==='Urgent Care'?'urgent':'er';
+      d.innerHTML=`<div class="ac-icon ${icoCls}">${ico}</div><div><div class="ac-name">${r.fac.name}</div><div class="ac-sub">${r.city.name}, ${r.city.state} · ${r.fac.type}</div></div><span class="ac-badge">${r.rc} reviews</span>`;
+      d.onclick=()=>{dropEl.classList.remove('open');onSelect('fac',r.fac,r.city);};
+    }
+    dropEl.appendChild(d);
+  });
+  dropEl.classList.add('open');
+}
+
+function initNavSearch(){
+  const inp=document.getElementById('navInput');
+  const drop=document.getElementById('navDrop');
+  inp.addEventListener('input',()=>buildAcDropdown(inp.value,drop,(t,a,b)=>{
+    inp.value='';
+    if(t==='city') goCity(a);
+    else goFac(a,b);
+  }));
+  inp.addEventListener('keydown',e=>{if(e.key==='Enter') searchFromText(inp.value,drop);});
+  document.addEventListener('click',e=>{if(!inp.contains(e.target)&&!drop.contains(e.target)) drop.classList.remove('open');});
+}
+function initHeroSearch(){
+  const inp=document.getElementById('heroInput');
+  const drop=document.getElementById('heroDrop');
+  inp.addEventListener('input',()=>buildAcDropdown(inp.value,drop,(t,a,b)=>{
+    if(t==='city') goCity(a);
+    else goFac(a,b);
+  }));
+  inp.addEventListener('keydown',e=>{if(e.key==='Enter') doHeroSearch();});
+  document.addEventListener('click',e=>{if(!inp.contains(e.target)&&!drop.contains(e.target)) drop.classList.remove('open');});
+}
+function doHeroSearch(){
+  const val=document.getElementById('heroInput').value.trim();
+  searchFromText(val,document.getElementById('heroDrop'));
+}
+function searchFromText(val,drop){
+  const q=val.toLowerCase();
+  if(!q){return;}
+  drop.classList.remove('open');
+  const city=CITIES.find(c=>`${c.name} ${c.state}`.toLowerCase().includes(q)||c.name.toLowerCase().startsWith(q));
+  if(city) goCity(city);
+  else {
+    const facs=[];
+    CITIES.forEach(c=>c.facilities.forEach(f=>{if(f.name.toLowerCase().includes(q)) facs.push({f,c});}));
+    if(facs.length) goFac(facs[0].f,facs[0].c);
+    else showToast('No results found. Try a city name like "Austin" or "Houston".','🔍');
+  }
+}
+
+/* ═══════════════════════════════════════
+   RENDER POPULAR CITIES
+═══════════════════════════════════════ */
+function renderPopCities(){
+  const pops=['austin-tx','houston-tx','dallas-tx','nashville-tn','denver-co','phoenix-az','miami-fl','seattle-wa','chicago-il','las-vegas-nv'];
+  const el=document.getElementById('heroCities');
+  pops.forEach(id=>{
+    const c=CITIES.find(x=>x.id===id);
+    if(!c) return;
+    const chip=document.createElement('div');
+    chip.className='hero-chip';
+    chip.innerHTML=`📍 ${c.name}, ${c.state}`;
+    chip.onclick=()=>goCity(c);
+    el.appendChild(chip);
+  });
+}
+
+/* ═══════════════════════════════════════
+   GO CITY → SEARCH RESULTS
+═══════════════════════════════════════ */
+function goCity(city){
+  CURRENT_CITY=city;
+  goto('search');
+  renderSearchResults(city,null);
+}
+
+function renderSearchResults(city,typeFilter){
+  document.getElementById('srTitle').textContent=`Facilities in ${city.name}, ${city.state}`;
+  document.getElementById('srSub').textContent=`${city.facilities.length} facilities · Click any facility to read reviews`;
+  // Filters
+  const types=[...new Set(city.facilities.map(f=>f.type))];
+  const filterEl=document.getElementById('srFilters');
+  filterEl.innerHTML='';
+  const all=document.createElement('div');
+  all.className='sf-chip'+(typeFilter===null?' active':'');
+  all.textContent='🏥 All Types';
+  all.onclick=()=>renderSearchResults(city,null);
+  filterEl.appendChild(all);
+  types.forEach(t=>{
+    const chip=document.createElement('div');
+    chip.className='sf-chip'+(typeFilter===t?' active':'');
+    const ico=t==='Hospital'?'🏥':t==='Urgent Care'?'🏪':'🚨';
+    chip.textContent=`${ico} ${t}`;
+    chip.onclick=()=>renderSearchResults(city,t);
+    filterEl.appendChild(chip);
+  });
+  // Facility cards
+  const list=document.getElementById('facilityList');
+  list.innerHTML='';
+  const facs=typeFilter?city.facilities.filter(f=>f.type===typeFilter):city.facilities;
+  facs.forEach(f=>{
+    const revs=facReviews(f.id);
+    const avg=calcAvg(revs);
+    const scoreClass=avg>=4?'good':avg>=3?'ok':avg>0?'bad':'';
+    const card=document.createElement('div');
+    card.className=`post-card ${scoreClass}`;
+    const ico=f.type==='Hospital'?'🏥':f.type==='Urgent Care'?'🏪':'🚨';
+    const fl=avg>=4?'green':avg>=3?'amber':avg>0?'red':'teal';
+    const flTxt=avg>=4?'⭐ Highly Rated':avg>=3?'😐 Mixed Reviews':avg>0?'👎 Poor Reviews':'📝 Be First to Review';
+    card.innerHTML=`
+      <div class="vote-col">
+        <div class="vote-btn" style="cursor:default;font-size:20px;">${ico}</div>
+        <div class="vote-n ${avg>=4?'hot':''}">${revs.length}</div>
+        <div style="font-size:9px;color:var(--muted2);text-align:center;line-height:1.2;">reviews</div>
+      </div>
+      <div class="post-body">
+        <div class="post-top">
+          <span class="flair ${fl}">${flTxt}</span>
+          ${f.beds?`<span style="font-size:11px;background:var(--surface2);border:1px solid var(--border);border-radius:100px;padding:1px 8px;color:var(--muted);">${f.beds} beds</span>`:''}
+        </div>
+        <div class="post-title">${f.name}</div>
+        <div class="post-loc">
+          <span>📍 ${city.name}, ${city.state}</span>
+          <span class="sep">·</span>
+          <span class="stars">${starsHtml(avg)} <span class="star-score">${avg>0?avg.toFixed(1):'—'}</span> <span class="star-ct">(${revs.length} review${revs.length!==1?'s':''})</span></span>
+          <span class="sep">·</span>
+          <span>${f.specs.join(', ')}</span>
+        </div>
+        <div class="post-actions">
+          <button class="act-btn" onclick="goFac(findFac('${f.id}'),findCity('${city.id}'))">💬 Read Reviews</button>
+          <button class="act-btn" onclick="openReviewModalFor('${f.id}','${city.id}')">✍️ Review This</button>
+        </div>
+      </div>`;
+    card.querySelector('.post-title').onclick=()=>goFac(f,city);
+    list.appendChild(card);
+  });
+}
+
+/* ═══════════════════════════════════════
+   GO FACILITY → DETAIL
+═══════════════════════════════════════ */
+function goFac(fac,city){
+  CURRENT_FAC=fac;
+  CURRENT_CITY=city;
+  goto('facility');
+  renderFacHeader(fac,city);
+  renderReviews(fac.id);
+}
+
+function renderFacHeader(fac,city){
+  const revs=facReviews(fac.id);
+  const avg=calcAvg(revs);
+  const scoreClass=avg>=4?'good':avg>=3?'ok':avg>0?'bad':'none';
+  const scoreDisp=avg>0?avg.toFixed(1):'—';
+  const catAvgs=calcCatAvgs(revs);
+  const wouldYes=revs.filter(r=>r.wouldReturn===true).length;
+  const wouldPct=revs.length>0?Math.round((wouldYes/revs.length)*100):null;
+  const ico=fac.type==='Hospital'?'🏥':fac.type==='Urgent Care'?'🏪':'🚨';
+
+  document.getElementById('facDetailHeader').innerHTML=`
+    <div class="fac-header">
+      <div class="fac-header-top">
+        <div class="fac-icon-wrap">${ico}</div>
+        <div style="flex:1;">
+          <div class="fac-name">${fac.name}</div>
+          <div class="fac-meta-row">
+            <span class="fac-type-pill">${fac.type}</span>
+            <span>📍 ${city.name}, ${city.state}</span>
+            ${fac.beds?`<span>· ${fac.beds} beds</span>`:''}
+            <span>· ${fac.specs.join(', ')}</span>
+          </div>
+        </div>
+      </div>
+      <div class="big-score-row">
+        <div class="big-score-circle ${scoreClass}">${scoreDisp}</div>
+        <div class="big-score-info">
+          <div class="big-score-label">Overall Rating</div>
+          <div class="stars">${starsHtml(avg)} <span class="star-score">${scoreDisp}</span> <span class="star-ct">${revs.length} review${revs.length!==1?'s':''}</span></div>
+          ${wouldPct!==null?`<div class="would-tag ${wouldPct>=60?'yes':'no'}">${wouldPct>=60?'✅':'❌'} ${wouldPct}% would return</div>`:''}
+        </div>
+        <div class="fac-actions-row">
+          <button class="btn-primary-full" style="width:auto;padding:9px 18px;margin:0;font-size:13px;" onclick="openReviewModalFor('${fac.id}','${city.id}')">✍️ Write a Review</button>
+        </div>
+      </div>
+      ${revs.length>0?`
+      <div class="cat-breakdown">
+        ${CAT_CONFIG.map(cat=>{
+          const val=catAvgs[cat.id]||0;
+          const cls=val>=4?'good':val>=3?'ok':'bad';
+          const pct=val>0?(val/5)*100:0;
+          return`<div class="cat-bd-item">
+            <div class="cat-bd-name">${cat.icon} ${cat.label}</div>
+            <div class="cat-bd-bar-wrap"><div class="cat-bd-bar ${cls}" style="width:${pct}%"></div></div>
+            <div class="cat-bd-val">${val>0?val.toFixed(1):'—'}</div>
+          </div>`;
+        }).join('')}
+      </div>`:''}
+    </div>`;
+}
+
+function renderReviews(facId){
+  let revs=facReviews(facId);
+  if(REV_SORT==='top') revs.sort((a,b)=>(b.upvotes-b.downvotes)-(a.upvotes-a.downvotes));
+  else if(REV_SORT==='new') revs.sort((a,b)=>b.ts-a.ts);
+  else revs.sort((a,b)=>(a.upvotes+a.downvotes)-(b.upvotes+b.downvotes));
+  const el=document.getElementById('reviewsList');
+  el.innerHTML='';
+  if(!revs.length){
+    el.innerHTML=`<div class="empty"><span class="empty-emoji">✍️</span><h3>No reviews yet</h3><p>Be the first to share your experience and help other travelers.</p><button class="btn-primary-full" style="max-width:220px;margin:0 auto;" onclick="openReviewModalFor('${facId}','${CURRENT_CITY?CURRENT_CITY.id:''}')">Write the First Review</button></div>`;
+    return;
+  }
+  revs.forEach(r=>el.appendChild(buildRevCard(r)));
+}
+
+function setRevSort(s,btn){
+  REV_SORT=s;
+  document.querySelectorAll('#reviewSortBar .sort-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  if(CURRENT_FAC) renderReviews(CURRENT_FAC.id);
+}
+
+/* ═══════════════════════════════════════
+   HOME FEED
+═══════════════════════════════════════ */
+function renderHomeFeed(){
+  let revs=allReviews().filter(r=>!r.hidden);
+  if(HOME_SORT==='hot') revs.sort((a,b)=>(b.upvotes-b.downvotes)-(a.upvotes-a.downvotes));
+  else if(HOME_SORT==='new') revs.sort((a,b)=>b.ts-a.ts);
+  else revs.sort((a,b)=>b.overall-a.overall);
+  revs=revs.slice(0,12);
+  const feed=document.getElementById('homeFeed');
+  feed.innerHTML='';
+  if(!revs.length){
+    feed.innerHTML=`<div class="empty"><span class="empty-emoji">💬</span><h3>No reviews yet</h3><p>Start by searching for a facility above, or write the first review!</p></div>`;
+    return;
+  }
+  revs.forEach(r=>{
+    const fac=findFac(r.facId);
+    const city=findCity(r.cityId);
+    feed.appendChild(buildPostCard(r,fac,city));
+  });
+}
+
+function setHomeSort(s,btn){
+  HOME_SORT=s;
+  document.querySelectorAll('.sort-bar .sort-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderHomeFeed();
+}
+
+function updateStats(){
+  const el=document.getElementById('statReviews');
+  const ct=allReviews().length;
+  if(el) el.textContent=ct>0?ct.toLocaleString():'12,400+';
+}
+
+/* ═══════════════════════════════════════
+   BUILD CARDS
+═══════════════════════════════════════ */
+function buildPostCard(r,fac,city){
+  const avg=calcRevAvg(r);
+  const net=(r.upvotes||0)-(r.downvotes||0);
+  const scoreClass=avg>=4?'good':avg>=3?'ok':'bad';
+  const fl=avg>=4?'green':avg>=3?'amber':'red';
+  const flTxt=avg>=4?'⭐ Positive':avg>=3?'😐 Mixed':'👎 Critical';
+  const card=document.createElement('div');
+  card.className=`post-card ${scoreClass}`;
+  const initials=(r.username||'??').substring(0,2).toUpperCase();
+  const avatarColor=strColor(r.username||'x');
+  card.innerHTML=`
+    <div class="vote-col">
+      <button class="vote-btn up" onclick="event.stopPropagation();voteRev('${r.id}','up',event)">▲</button>
+      <div class="vote-n ${net>10?'hot':''}">${net}</div>
+      <button class="vote-btn down" onclick="event.stopPropagation();voteRev('${r.id}','down',event)">▼</button>
+    </div>
+    <div class="post-body">
+      <div class="post-top">
+        <span class="flair ${fl}">${flTxt}</span>
+        <span class="post-meta">by <span class="u" style="display:inline-flex;align-items:center;gap:4px;"><span style="width:16px;height:16px;border-radius:50%;background:${avatarColor};display:inline-flex;align-items:center;justify-content:center;font-size:8px;font-weight:800;color:#fff;">${initials}</span>u/${r.username}</span></span>
+        <span class="post-meta" style="color:var(--muted2);">${timeAgo(r.ts)}</span>
+      </div>
+      <div class="post-title">${r.title||'Review'}</div>
+      <div class="post-loc">
+        ${fac?`<span>🏥 ${fac.name}</span><span class="sep">·</span>`:''}
+        ${city?`<span>📍 ${city.name}, ${city.state}</span><span class="sep">·</span>`:''}
+        <span class="stars">${starsHtml(avg)} <span class="star-score">${avg.toFixed(1)}</span></span>
+        <span class="sep">·</span>
+        <span>${r.contractLen||'13 weeks'}</span>
+      </div>
+      ${r.body?`<div class="quote-snip">"${r.body.substring(0,160)}${r.body.length>160?'…':''}"</div>`:''}
+      <div class="post-actions">
+        <button class="act-btn" onclick="event.stopPropagation();${fac&&city?`goFac(findFac('${r.facId}'),findCity('${r.cityId||''}')):''}"}>💬 Full Review</button>
+        <button class="act-btn report" onclick="event.stopPropagation();openReport('${r.id}')">🚩 Report</button>
+      </div>
+    </div>`;
+  if(fac&&city) card.querySelector('.post-title').onclick=()=>goFac(fac,city);
+  return card;
+}
+
+function buildRevCard(r){
+  const avg=calcRevAvg(r);
+  const net=(r.upvotes||0)-(r.downvotes||0);
+  const initials=(r.username||'??').substring(0,2).toUpperCase();
+  const avatarColor=strColor(r.username||'x');
+  const wrap=document.createElement('div');
+  wrap.style.position='relative';
+  wrap.id='rwrap-'+r.id;
+  wrap.innerHTML=`
+    <div class="rev-card">
+      <div class="rev-reported-overlay" id="rlay-${r.id}">🚩 Reported · Under Review</div>
+      <div class="rev-head">
+        <div class="rev-avatar" style="background:${avatarColor};">${initials}</div>
+        <span class="rev-user">u/${r.username}</span>
+        <span class="rev-role">${r.role||'Travel Clinician'}</span>
+        <span class="rev-time">${r.contractLen||'13wk'} · ${r.year||2024} · ${timeAgo(r.ts)}</span>
+        ${r.wouldReturn===true?'<span class="rev-returned yes">✅ Would Return</span>':r.wouldReturn===false?'<span class="rev-returned no">❌ Would Not Return</span>':''}
+        <button class="rev-report-btn" onclick="openReport('${r.id}')">🚩 Report</button>
+      </div>
+      ${r.title?`<div class="rev-title">"${r.title}"</div>`:''}
+      <div class="rev-cat-row">
+        ${CAT_CONFIG.map(cat=>{const v=r.ratings?.[cat.id];return v?`<span class="rev-cat-pill">${cat.icon} ${cat.label}: <span class="s">${v}/5</span></span>`:''}).join('')}
+        <span class="rev-cat-pill">⭐ Overall: <span class="s">${r.overall||avg.toFixed(1)}/5</span></span>
+      </div>
+      <div class="rev-body">${r.body||''}</div>
+      <div class="rev-footer">
+        <button class="rev-vote up" onclick="voteRev('${r.id}','up',event)">▲ Helpful</button>
+        <span class="rev-vote-score" id="vs-${r.id}">${net}</span>
+        <button class="rev-vote down" onclick="voteRev('${r.id}','down',event)">▼</button>
+        <div style="margin-left:auto;display:flex;align-items:center;gap:4px;">
+          <span class="stars" style="font-size:12px;">${starsHtml(avg)}</span>
+          <span style="font-size:12px;font-weight:800;color:var(--text2);">${avg.toFixed(1)}</span>
+        </div>
+      </div>
+    </div>`;
+  return wrap;
+}
+
+/* ═══════════════════════════════════════
+   SIDEBAR
+═══════════════════════════════════════ */
+function renderSidebar(id){
+  const el=document.getElementById(id);
+  if(!el) return;
+  el.innerHTML=`
+    <div class="side-card">
+      <div class="side-card-head">📋 Community Guidelines</div>
+      <div class="side-card-body">
+        <p>HospitalRank is for travel healthcare professionals. Keep it honest, professional, and PHI-free.</p>
+        <div class="side-rule"><span class="n">1</span><span>Never include patient names, diagnoses, or any identifying details (HIPAA).</span></div>
+        <div class="side-rule"><span class="n">2</span><span>Be specific. Vague reviews help no one. Details help everyone.</span></div>
+        <div class="side-rule"><span class="n">3</span><span>No personal vendettas. Critique systems and processes, not individuals by name.</span></div>
+        <div class="side-rule"><span class="n">4</span><span>One review per contract. Duplicates will be removed.</span></div>
+        <div class="side-rule"><span class="n">5</span><span>Be honest in both directions — fake positives are removed too.</span></div>
+        <button class="btn-primary-full" onclick="openReviewModal()" style="margin-top:14px;">✍️ Write a Review</button>
+        <button class="btn-outline-full" onclick="openModal('disclaimerModal')">⚖️ View Full Disclaimer</button>
+      </div>
+    </div>
+    <div class="disclaimer-side">
+      <h4>⚠️ Disclaimer</h4>
+      <p>All reviews are anonymous user opinions. HospitalRank is not liable for their accuracy. This is not medical, legal, or employment advice. <a href="#" onclick="openModal('disclaimerModal');return false;">Read full disclaimer →</a></p>
+    </div>
+    <div class="agency-card">
+      <div class="agency-badge">🏢 Coming Soon</div>
+      <h3>Recruit Travel Clinicians</h3>
+      <p>Post open contracts where thousands of decision-ready travelers are already searching. Early partners get founding pricing.</p>
+      <button class="btn-agency" onclick="showToast('Agency portal coming soon! You\\'re on the list.','🏢')">Get Early Access →</button>
+    </div>`;
+}
+
+/* ═══════════════════════════════════════
+   VOTING
+═══════════════════════════════════════ */
+function voteRev(id,dir,e){
+  if(e) e.stopPropagation();
+  const voted=ls('hr_voted')||{};
+  if(voted[id]){showToast('You already voted on this review.','ℹ️');return;}
+  const revs=allReviews();
+  const idx=revs.findIndex(r=>r.id===id);
+  if(idx<0) return;
+  if(dir==='up') revs[idx].upvotes=(revs[idx].upvotes||0)+1;
+  else revs[idx].downvotes=(revs[idx].downvotes||0)+1;
+  saveReviews(revs);
+  voted[id]=dir;
+  ls('hr_voted',voted);
+  const el=document.getElementById('vs-'+id);
+  if(el) el.textContent=revs[idx].upvotes-revs[idx].downvotes;
+}
+
+/* ═══════════════════════════════════════
+   REPORT
+═══════════════════════════════════════ */
+function openReport(id){
+  REPORT_TARGET=id;
+  document.querySelectorAll('.report-option').forEach(o=>o.classList.remove('sel'));
+  document.getElementById('reportExtra').value='';
+  openModal('reportModal');
+}
+function selReport(el,val){
+  document.querySelectorAll('.report-option').forEach(o=>o.classList.remove('sel'));
+  el.classList.add('sel');
+}
+function submitReport(){
+  const sel=document.querySelector('.report-option.sel');
+  if(!sel){showToast('Please select a reason.','⚠️');return;}
+  const reason=sel.querySelector('input').value;
+  const revs=allReviews();
+  const idx=revs.findIndex(r=>r.id===REPORT_TARGET);
+  if(idx>=0){
+    revs[idx].reported=true;
+    revs[idx].reportReason=reason;
+    if(reason==='hipaa'||reason==='defamatory'){
+      revs[idx].hidden=true;
+      const rl=document.getElementById('rlay-'+REPORT_TARGET);
+      if(rl) rl.classList.add('show');
+    }
+    saveReviews(revs);
+  }
+  closeModal('reportModal');
+  if(reason==='hipaa') showToast('⚠️ HIPAA report submitted — review hidden pending moderation.','🔒');
+  else showToast('Report submitted. Our team will review within 24 hours.','✅');
+  REPORT_TARGET=null;
+}
+
+/* ═══════════════════════════════════════
+   WRITE REVIEW — MULTI-STEP PAGE
+═══════════════════════════════════════ */
+let RF={facName:'',city:'',state:'',facType:'',specialty:'',contractLen:'13 weeks',year:new Date().getFullYear(),ratings:{},overall:0,title:'',body:'',wouldReturn:null};
+
+function openReviewModal(){
+  REVIEW_STEP=1;
+  RF={facName:CURRENT_FAC?CURRENT_FAC.name:'',city:CURRENT_CITY?CURRENT_CITY.name:'',state:CURRENT_CITY?CURRENT_CITY.state:'',facType:CURRENT_FAC?CURRENT_FAC.type:'',specialty:'',contractLen:'13 weeks',year:new Date().getFullYear(),ratings:{},overall:0,title:'',body:'',wouldReturn:null};
+  REVIEW_FAC_ID=CURRENT_FAC?CURRENT_FAC.id:null;
+  REVIEW_CITY_ID=CURRENT_CITY?CURRENT_CITY.id:null;
+  PREV_PAGE=document.querySelector('.page.active')?.id?.replace('page-','')||'home';
+  goto('review');
+  renderReviewStep();
+}
+
+function openReviewModalFor(facId,cityId){
+  CURRENT_FAC=findFac(facId);
+  CURRENT_CITY=findCity(cityId);
+  openReviewModal();
+}
+
+function startFreshReview(){
+  CURRENT_FAC=null;
+  CURRENT_CITY=null;
+  openReviewModal();
+}
+
+function renderReviewStep(){
+  renderStepTrack();
+  const panel=document.getElementById('stepPanel');
+  panel.innerHTML='';
+  const steps={1:renderStep1,2:renderStep2,3:renderStep3};
+  if(steps[REVIEW_STEP]) steps[REVIEW_STEP](panel);
+}
+
+function renderStepTrack(){
+  const labels=['Facility','Ratings','Your Story'];
+  const el=document.getElementById('stepTrack');
+  el.innerHTML='';
+  labels.forEach((l,i)=>{
+    const sn=i+1;
+    const isDone=sn<REVIEW_STEP;
+    const isActive=sn===REVIEW_STEP;
+    const item=document.createElement('div');
+    item.className='step-item';
+    item.innerHTML=`<div class="step-num ${isDone?'done':isActive?'active':'future'}">${isDone?'✓':sn}</div><div class="step-lbl ${isActive?'active':''}">${l}</div>`;
+    el.appendChild(item);
+    if(i<labels.length-1){
+      const line=document.createElement('div');
+      line.className=`step-line ${isDone?'done':'future'}`;
+      el.appendChild(line);
+    }
+  });
+}
+
+function renderStep1(panel){
+  panel.innerHTML=`
+    <div style="display:flex;flex-direction:column;gap:16px;">
+      <div class="card" style="padding:22px;">
+        <h3 style="font-size:16px;font-weight:800;margin-bottom:3px;letter-spacing:-.01em;">Which facility are you reviewing?</h3>
+        <p style="font-size:13px;color:var(--muted);margin-bottom:18px;">Enter the facility details so other travelers can find this review.</p>
+        <div class="f-group">
+          <label class="f-label">Facility Name <span class="req">*</span></label>
+          <input id="rfName" class="f-input" placeholder="e.g. Mayo Clinic — Phoenix" value="${RF.facName}">
+        </div>
+        <div class="f-row">
+          <div class="f-group">
+            <label class="f-label">City <span class="req">*</span></label>
+            <input id="rfCity" class="f-input" placeholder="e.g. Austin" value="${RF.city}">
+          </div>
+          <div class="f-group">
+            <label class="f-label">State <span class="req">*</span></label>
+            <input id="rfState" class="f-input" placeholder="TX" maxlength="2" value="${RF.state}">
+          </div>
+        </div>
+        <div class="f-group" style="margin-bottom:0;">
+          <label class="f-label">Facility Type</label>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;" id="rfTypeRow">
+            ${['Hospital','Urgent Care','Freestanding ER','Clinic','Other'].map(t=>`<button class="spec-btn ${RF.facType===t?'active':''}" style="padding:6px 14px;font-size:12px;" onclick="RF.facType='${t}';this.parentElement.querySelectorAll('.spec-btn').forEach(b=>b.classList.remove('active'));this.classList.add('active')">${t}</button>`).join('')}
+          </div>
+        </div>
+      </div>
+      <div class="card" style="padding:22px;">
+        <h3 style="font-size:16px;font-weight:800;margin-bottom:3px;letter-spacing:-.01em;">Your Contract Details</h3>
+        <p style="font-size:13px;color:var(--muted);margin-bottom:18px;">Helps others filter reviews by specialty and timeframe.</p>
+        <div class="f-group">
+          <label class="f-label">Your Specialty <span class="req">*</span></label>
+          <select id="rfSpec" class="f-input">
+            <option value="">Select specialty…</option>
+            ${SPECIALTIES.map(s=>`<option value="${s}" ${RF.specialty===s?'selected':''}>${s}</option>`).join('')}
+          </select>
+        </div>
+        <div class="f-row">
+          <div class="f-group" style="margin-bottom:0;">
+            <label class="f-label">Contract Length</label>
+            <select id="rfLen" class="f-input">
+              ${CONTRACT_LENS.map(l=>`<option ${RF.contractLen===l?'selected':''}>${l}</option>`).join('')}
+            </select>
+          </div>
+          <div class="f-group" style="margin-bottom:0;">
+            <label class="f-label">Year</label>
+            <select id="rfYear" class="f-input">
+              ${[2025,2024,2023,2022,2021].map(y=>`<option ${RF.year===y?'selected':''}>${y}</option>`).join('')}
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="hipaa-warn">
+        <div class="hipaa-warn-icon">⚠️</div>
+        <div class="hipaa-warn-text">
+          <strong>HIPAA Reminder</strong>
+          <p>Never include patient names, ages, diagnoses, case details, or any Protected Health Information. You are legally responsible for your content.</p>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:flex-end;gap:10px;">
+        <button class="btn-back" onclick="goto('${PREV_PAGE}')">← Cancel</button>
+        <button class="btn-submit" onclick="stepNext1()">Next: Rate the Facility →</button>
+      </div>
+    </div>`;
+}
+
+function stepNext1(){
+  RF.facName=document.getElementById('rfName').value.trim();
+  RF.city=document.getElementById('rfCity').value.trim();
+  RF.state=document.getElementById('rfState').value.trim().toUpperCase();
+  RF.specialty=document.getElementById('rfSpec').value;
+  RF.contractLen=document.getElementById('rfLen').value;
+  RF.year=parseInt(document.getElementById('rfYear').value);
+  if(!RF.facName){showToast('Please enter a facility name.','⚠️');document.getElementById('rfName').classList.add('err');return;}
+  if(!RF.city){showToast('Please enter a city.','⚠️');document.getElementById('rfCity').classList.add('err');return;}
+  if(!RF.state){showToast('Please enter a state.','⚠️');document.getElementById('rfState').classList.add('err');return;}
+  if(!RF.specialty){showToast('Please select your specialty.','⚠️');document.getElementById('rfSpec').classList.add('err');return;}
+  REVIEW_STEP=2;
+  renderReviewStep();
+}
+
+function renderStep2(panel){
+  panel.innerHTML=`
+    <div style="display:flex;flex-direction:column;gap:16px;">
+      <div class="card" style="padding:22px;">
+        <h3 style="font-size:16px;font-weight:800;margin-bottom:3px;">Rate each category</h3>
+        <p style="font-size:13px;color:var(--muted);margin-bottom:18px;">Your ratings directly help other travelers decide. Be honest.</p>
+        <div class="cat-rate-grid" id="catRateGrid">
+          ${CAT_CONFIG.map(cat=>`
+            <div class="cat-rate-card ${RF.ratings[cat.id]?'rated':''}" id="catcard-${cat.id}">
+              <div class="cat-rate-card-head">
+                <span class="cat-rate-icon">${cat.icon}</span>
+                <span class="cat-rate-name">${cat.label}</span>
+              </div>
+              <div class="cat-rate-desc">${cat.desc}</div>
+              <div class="star-pick-row" id="stars-${cat.id}">
+                ${[1,2,3,4,5].map(n=>`<span class="star-pick ${(RF.ratings[cat.id]||0)>=n?'on':''}" onclick="setCatRating('${cat.id}',${n})" onmouseenter="hoverCat('${cat.id}',${n})" onmouseleave="leaveCat('${cat.id}')">★</span>`).join('')}
+                <span class="star-pick-lbl" id="starlbl-${cat.id}">${RF.ratings[cat.id]?STAR_LABELS[RF.ratings[cat.id]]:''}</span>
+              </div>
+            </div>`).join('')}
+        </div>
+      </div>
+      <div class="card" style="padding:22px;border:2px solid var(--teal);border-color:rgba(20,184,166,.4);">
+        <h3 style="font-size:16px;font-weight:800;margin-bottom:3px;display:flex;align-items:center;gap:7px;">⭐ Overall Rating <span style="font-size:12px;font-weight:400;color:var(--muted);"> — your holistic impression</span></h3>
+        <p style="font-size:13px;color:var(--muted);margin-bottom:12px;">Separate from individual categories.</p>
+        <div class="star-pick-row" id="stars-overall" style="gap:6px;">
+          ${[1,2,3,4,5].map(n=>`<span class="star-pick ${RF.overall>=n?'on':''}" style="font-size:32px;" onclick="RF.overall=${n};updateOverallStars()" onmouseenter="hoverOverall(${n})" onmouseleave="updateOverallStars()">★</span>`).join('')}
+          <span class="star-pick-lbl" id="starlbl-overall" style="font-size:14px;">${RF.overall?STAR_LABELS[RF.overall]:''}</span>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <button class="btn-back" onclick="REVIEW_STEP=1;renderReviewStep()">← Back</button>
+        <button class="btn-submit" onclick="stepNext2()">Next: Write Your Story →</button>
+      </div>
+    </div>`;
+}
+
+function setCatRating(catId,val){
+  RF.ratings[catId]=val;
+  const row=document.getElementById('stars-'+catId);
+  if(row) row.querySelectorAll('.star-pick:not(.star-pick-lbl)').forEach((s,i)=>s.classList.toggle('on',i<val));
+  const lbl=document.getElementById('starlbl-'+catId);
+  if(lbl) lbl.textContent=STAR_LABELS[val];
+  const card=document.getElementById('catcard-'+catId);
+  if(card) card.classList.toggle('rated',val>0);
+}
+function hoverCat(catId,val){
+  const row=document.getElementById('stars-'+catId);
+  if(row) row.querySelectorAll('.star-pick:not(.star-pick-lbl)').forEach((s,i)=>s.classList.toggle('on',i<val));
+  const lbl=document.getElementById('starlbl-'+catId);
+  if(lbl) lbl.textContent=val?STAR_LABELS[val]:'';
+}
+function leaveCat(catId){
+  const val=RF.ratings[catId]||0;
+  hoverCat(catId,val);
+}
+function updateOverallStars(){
+  const row=document.getElementById('stars-overall');
+  if(row) row.querySelectorAll('.star-pick:not(.star-pick-lbl)').forEach((s,i)=>s.classList.toggle('on',i<RF.overall));
+  const lbl=document.getElementById('starlbl-overall');
+  if(lbl) lbl.textContent=RF.overall?STAR_LABELS[RF.overall]:'';
+}
+function hoverOverall(val){
+  const row=document.getElementById('stars-overall');
+  if(row) row.querySelectorAll('.star-pick:not(.star-pick-lbl)').forEach((s,i)=>s.classList.toggle('on',i<val));
+  const lbl=document.getElementById('starlbl-overall');
+  if(lbl) lbl.textContent=STAR_LABELS[val];
+}
+
+function stepNext2(){
+  const rated=Object.keys(RF.ratings).length;
+  if(rated<3){showToast('Please rate at least 3 categories.','⚠️');return;}
+  if(!RF.overall){showToast('Please give an overall star rating.','⚠️');return;}
+  REVIEW_STEP=3;
+  renderReviewStep();
+}
+
+function renderStep3(panel){
+  const catAvgVal=(Object.values(RF.ratings).filter(v=>v>0).reduce((a,b)=>a+b,0)/Math.max(Object.values(RF.ratings).filter(v=>v>0).length,1)).toFixed(1);
+  panel.innerHTML=`
+    <div style="display:flex;flex-direction:column;gap:16px;">
+      <div class="card" style="padding:22px;">
+        <h3 style="font-size:16px;font-weight:800;margin-bottom:3px;">Tell the full story</h3>
+        <p style="font-size:13px;color:var(--muted);margin-bottom:18px;">Your written experience is the most valuable part. Be specific — no patient details ever.</p>
+        <div class="f-group">
+          <label class="f-label">Review Title <span class="req">*</span> <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--muted2);" id="titleCt">(0/100)</span></label>
+          <input id="rfTitle" class="f-input" style="font-size:15px;font-weight:600;" placeholder='e.g. "Amazing ICU team, management needs major work"' value="${RF.title}" oninput="document.getElementById('titleCt').textContent='('+this.value.length+'/100)';RF.title=this.value.slice(0,100);" maxlength="100">
+          <div class="f-hint">Make it catchy and informative (5–100 characters)</div>
+        </div>
+        <div class="f-group" style="margin-bottom:0;">
+          <label class="f-label">Your Full Experience <span class="req">*</span> <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--muted2);" id="bodyCt">(0 chars)</span></label>
+          <textarea id="rfBody" class="f-input" rows="8" placeholder="Share the complete story — what was daily life like? How were staffing ratios? Did management support travelers? Were agency promises kept? What would you tell your best friend before taking this contract?" oninput="document.getElementById('bodyCt').textContent='('+this.value.length+' chars)';RF.body=this.value;">${RF.body}</textarea>
+          <div class="f-hint">Minimum 50 characters. No patient names, diagnoses, or identifying details.</div>
+        </div>
+      </div>
+      <div class="card" style="padding:22px;">
+        <h3 style="font-size:16px;font-weight:800;margin-bottom:3px;">Would you return?</h3>
+        <p style="font-size:13px;color:var(--muted);margin-bottom:14px;">This is the first thing travelers look for.</p>
+        <div class="would-row">
+          <button class="would-btn yes ${RF.wouldReturn===true?'sel':''}" onclick="setWouldReturn(true)"><span class="wi">✅</span><span style="font-size:12px;">Yes, I'd return</span></button>
+          <button class="would-btn maybe ${RF.wouldReturn===null&&RF.wouldReturn!==undefined?'sel':''}" onclick="setWouldReturn('maybe')"><span class="wi">🤷</span><span style="font-size:12px;">Neutral / Maybe</span></button>
+          <button class="would-btn no ${RF.wouldReturn===false?'sel':''}" onclick="setWouldReturn(false)"><span class="wi">❌</span><span style="font-size:12px;">Would not return</span></button>
+        </div>
+      </div>
+      <div class="privacy-row">
+        <div class="toggle-pill"></div>
+        <div>
+          <div style="font-size:13px;font-weight:700;color:var(--teal-dark);">🔒 Posted Anonymously</div>
+          <div style="font-size:12px;color:var(--muted);">Your identity is never shared. Posted as u/${USER?USER.username:'anonymous'}.</div>
+        </div>
+      </div>
+      <div class="hipaa-warn">
+        <div class="hipaa-warn-icon">⚠️</div>
+        <div class="hipaa-warn-text">
+          <strong>Final HIPAA Check</strong>
+          <p>Before submitting — verify your review contains zero patient names, diagnoses, dates, or any information that could identify a patient. You are legally responsible.</p>
+        </div>
+      </div>
+      <div class="review-summary">
+        <div style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:10px;">Review Summary</div>
+        <div class="rs-row"><span class="rs-k">Facility</span><span class="rs-v">${RF.facName}, ${RF.city}, ${RF.state}</span></div>
+        <div class="rs-row"><span class="rs-k">Role</span><span class="rs-v">${RF.specialty}</span></div>
+        <div class="rs-row"><span class="rs-k">Contract</span><span class="rs-v">${RF.contractLen} · ${RF.year}</span></div>
+        <div class="rs-row"><span class="rs-k">Category Avg</span><span class="rs-v" style="color:var(--gold);">${'★'.repeat(Math.round(parseFloat(catAvgVal)))}${'☆'.repeat(5-Math.round(parseFloat(catAvgVal)))} ${catAvgVal}/5</span></div>
+        <div class="rs-row"><span class="rs-k">Overall</span><span class="rs-v" style="color:var(--gold);">${'★'.repeat(RF.overall)}${'☆'.repeat(5-RF.overall)} ${RF.overall}/5</span></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <button class="btn-back" onclick="REVIEW_STEP=2;renderReviewStep()">← Back</button>
+        <button class="btn-submit" onclick="submitReview()" id="submitBtn">✅ Submit Review</button>
+      </div>
+    </div>`;
+  // restore char counts
+  const titleEl=document.getElementById('rfTitle');
+  const bodyEl=document.getElementById('rfBody');
+  if(titleEl) document.getElementById('titleCt').textContent=`(${titleEl.value.length}/100)`;
+  if(bodyEl) document.getElementById('bodyCt').textContent=`(${bodyEl.value.length} chars)`;
+}
+
+function setWouldReturn(val){
+  RF.wouldReturn=val==='maybe'?null:val;
+  document.querySelectorAll('.would-btn').forEach(b=>b.classList.remove('sel'));
+  const cls=val===true?'yes':val===false?'no':'maybe';
+  document.querySelector(`.would-btn.${cls}`)?.classList.add('sel');
+}
+
+function submitReview(){
+  RF.title=(document.getElementById('rfTitle')?.value||'').trim();
+  RF.body=(document.getElementById('rfBody')?.value||'').trim();
+  if(RF.title.length<5){showToast('Title must be at least 5 characters.','⚠️');return;}
+  if(RF.body.length<50){showToast('Please write at least 50 characters.','⚠️');return;}
+
+  // Try to match to known facility
+  let facId=slugify(RF.facName+'-'+RF.city);
+  let cityId=null;
+  const matchCity=CITIES.find(c=>c.name.toLowerCase()===RF.city.toLowerCase()&&c.state.toLowerCase()===RF.state.toLowerCase());
+  if(matchCity){
+    cityId=matchCity.id;
+    const matchFac=matchCity.facilities.find(f=>f.name.toLowerCase()===RF.facName.toLowerCase());
+    if(matchFac) facId=matchFac.id;
+  }
+  REVIEW_FAC_ID=facId;
+  REVIEW_CITY_ID=cityId;
+
+  const btn=document.getElementById('submitBtn');
+  if(btn){btn.disabled=true;btn.textContent='Submitting…';}
+
+  setTimeout(()=>{
+    const rev={
+      id:'r_'+Date.now()+'_'+Math.random().toString(36).slice(2,6),
+      facId,facName:RF.facName,cityId,cityName:`${RF.city}, ${RF.state}`,
+      username:USER?USER.username:'Anonymous',
+      role:RF.specialty,contractLen:RF.contractLen,year:RF.year,
+      ratings:{...RF.ratings},overall:RF.overall,
+      title:RF.title,body:RF.body,
+      wouldReturn:RF.wouldReturn,
+      upvotes:0,downvotes:0,ts:Date.now(),hidden:false,
+    };
+    const revs=allReviews();
+    revs.push(rev);
+    saveReviews(revs);
+    document.getElementById('successFacName').textContent=RF.facName;
+    goto('success');
+    renderHomeFeed();
+    updateStats();
+    if(CURRENT_FAC&&CURRENT_FAC.id===facId){
+      renderFacHeader(CURRENT_FAC,CURRENT_CITY);
+      renderReviews(facId);
+    }
+  },900);
+}
+
+/* ═══════════════════════════════════════
+   HELPERS
+═══════════════════════════════════════ */
+function calcRevAvg(r){
+  if(!r.ratings) return r.overall||0;
+  const vals=Object.values(r.ratings).filter(v=>v>0);
+  if(!vals.length) return r.overall||0;
+  return vals.reduce((a,b)=>a+b,0)/vals.length;
+}
+function calcAvg(revs){
+  if(!revs||!revs.length) return 0;
+  const avgs=revs.map(r=>calcRevAvg(r)).filter(v=>v>0);
+  if(!avgs.length) return 0;
+  return avgs.reduce((a,b)=>a+b,0)/avgs.length;
+}
+function calcCatAvgs(revs){
+  const sums={},cts={};
+  revs.forEach(r=>{if(!r.ratings) return;Object.entries(r.ratings).forEach(([k,v])=>{sums[k]=(sums[k]||0)+v;cts[k]=(cts[k]||0)+1;});});
+  const res={};
+  Object.keys(sums).forEach(k=>res[k]=sums[k]/cts[k]);
+  return res;
+}
+function starsHtml(score){
+  let h='';
+  for(let i=1;i<=5;i++) h+=`<span class="star ${i<=Math.round(score)?'on':'off'}">★</span>`;
+  return h;
+}
+function findFac(id){for(const c of CITIES){const f=c.facilities.find(x=>x.id===id);if(f) return f;}return null;}
+function findCity(id){return CITIES.find(c=>c.id===id)||null;}
+function findCityByFac(facId){for(const c of CITIES){if(c.facilities.find(f=>f.id===facId)) return c;}return null;}
+function slugify(s){return s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');}
+function timeAgo(ts){
+  const d=Date.now()-ts;
+  if(d<60000) return 'just now';
+  if(d<3600000) return Math.floor(d/60000)+'m ago';
+  if(d<86400000) return Math.floor(d/3600000)+'h ago';
+  if(d<2592000000) return Math.floor(d/86400000)+'d ago';
+  return Math.floor(d/2592000000)+'mo ago';
+}
+function showToast(msg,icon){
+  const t=document.getElementById('toast');
+  t.innerHTML=(icon?`<span>${icon}</span>`:'')+'<span>'+msg+'</span>';
+  t.classList.add('show');
+  clearTimeout(window._toastT);
+  window._toastT=setTimeout(()=>t.classList.remove('show'),3600);
+}
+function openModal(id){document.getElementById(id).classList.add('open');document.body.style.overflow='hidden';}
+function closeModal(id){document.getElementById(id).classList.remove('open');document.body.style.overflow='';}
+
+document.querySelectorAll('.modal-overlay').forEach(el=>{
+  el.addEventListener('click',e=>{
+    if(e.target===el&&el.id!=='disclaimerModal') closeModal(el.id);
+  });
+});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape') ['reportModal'].forEach(id=>closeModal(id));
+});
+</script>
+</body>
+</html>
